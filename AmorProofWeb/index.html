@@ -1,0 +1,780 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>AmorProof | Un día a la vez</title>
+
+  <style>
+    :root{
+      --celeste:#D0D7DD;
+      --lavanda:#AE48CA;
+      --azul:#BFC8D6;
+      --magenta:#CB6CE6;
+
+      --black:#000000;
+      --white:#ffffff;
+
+      --radius:18px;
+      --max:980px;
+
+      --text: rgba(0,0,0,.92);
+      --muted: rgba(0,0,0,.62);
+
+      --card: rgba(255,255,255,.78);
+      --cardBorder: rgba(0,0,0,.08);
+
+      --shadow: 0 16px 44px rgba(0,0,0,.18);
+
+      --brandGrad: linear-gradient(90deg, var(--lavanda), var(--magenta), var(--celeste));
+      --brandSoft: linear-gradient(90deg, rgba(174,72,202,.18), rgba(203,108,230,.14), rgba(208,215,221,.22));
+    }
+
+    *{box-sizing:border-box}
+
+    body{
+      margin:0;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial;
+      color: var(--text);
+      line-height:1.5;
+
+      background:
+        radial-gradient(900px 520px at 20% 15%, rgba(174,72,202,.35), transparent 60%),
+        radial-gradient(900px 520px at 85% 20%, rgba(203,108,230,.28), transparent 60%),
+        radial-gradient(900px 520px at 50% 90%, rgba(191,200,214,.45), transparent 60%),
+        linear-gradient(180deg, rgba(208,215,221,1) 0%, rgba(191,200,214,.92) 55%, rgba(208,215,221,1) 100%);
+    }
+
+    .wrap{max-width:var(--max); margin:0 auto; padding:22px;}
+
+    .nav{
+      position:sticky; top:0;
+      backdrop-filter: blur(12px);
+      background: rgba(255,255,255,.62);
+      border-bottom: 1px solid rgba(0,0,0,.08);
+      z-index:10;
+    }
+    .navin{
+      display:flex; align-items:center; justify-content:space-between;
+      gap:12px; padding:14px 22px; max-width:var(--max); margin:0 auto;
+    }
+
+    .brand{
+      display:flex; align-items:center; gap:12px;
+      font-weight:950;
+      text-decoration:none;
+      color: var(--text);
+    }
+
+    .logo{
+      width:44px;
+      height:44px;
+      border-radius:12px;
+      object-fit:contain;
+      display:block;
+      filter: drop-shadow(0 10px 18px rgba(0,0,0,.18));
+      background: rgba(255,255,255,.6);
+      border: 1px solid rgba(0,0,0,.08);
+      padding:6px;
+    }
+
+    .brandText{letter-spacing:.2px}
+
+    .btns{display:flex; gap:10px; flex-wrap:wrap; justify-content:flex-end}
+
+    .btn{
+      border:1px solid rgba(0,0,0,.12);
+      background: rgba(255,255,255,.55);
+      color: var(--text);
+      padding:10px 14px;
+      border-radius:999px;
+      cursor:pointer;
+      font-weight:800;
+      transition: transform .14s ease, box-shadow .14s ease, background .14s ease;
+      box-shadow: 0 10px 24px rgba(0,0,0,.10);
+      text-decoration:none;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+    }
+    .btn:hover{ transform: translateY(-1px); box-shadow: 0 14px 30px rgba(0,0,0,.14); }
+
+    .btn.primary{
+      border:0;
+      background: var(--brandGrad);
+      color: rgba(0,0,0,.92);
+      box-shadow: 0 16px 44px rgba(0,0,0,.16);
+    }
+
+    header{padding:42px 0 18px}
+    .hero{display:grid; grid-template-columns: 1fr; gap:18px;}
+
+    .card{
+      background: var(--card);
+      border: 1px solid var(--cardBorder);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding:18px;
+      position:relative;
+      overflow:hidden;
+    }
+
+    .card::before{
+      content:"";
+      position:absolute;
+      inset:-2px;
+      background:
+        radial-gradient(520px 220px at 18% 0%, rgba(203,108,230,.20), transparent 60%),
+        radial-gradient(520px 220px at 88% 10%, rgba(174,72,202,.18), transparent 60%),
+        radial-gradient(520px 220px at 50% 90%, rgba(191,200,214,.35), transparent 60%);
+      opacity:.9;
+      pointer-events:none;
+      z-index:0;
+    }
+    .card > *{ position:relative; z-index:1; }
+
+    h1{margin:8px 0 10px; font-size: clamp(28px, 3.4vw, 44px); line-height:1.08}
+    .sub{color:var(--muted); font-size: 16px; max-width: 60ch}
+
+    section{padding:26px 0}
+    .sectionTitle{
+      display:flex; align-items:end; justify-content:space-between;
+      gap:12px; margin-bottom:12px
+    }
+    h2{margin:0; font-size:22px}
+    .hint{color:var(--muted); font-size:13px}
+
+    footer{padding:26px 0 40px; color:var(--muted); font-size:13px}
+
+    .testis{
+      display:grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap:14px;
+    }
+    @media (max-width: 720px){
+      .testis{ grid-template-columns: 1fr; }
+    }
+    .wide{ grid-column: 1 / -1; }
+
+    .tcard{
+      padding:18px;
+      overflow:hidden;
+    }
+
+    /* ✅ COMILLAS BONITAS (SVG) a la izquierda: SIEMPRE se ven como comillas */
+    .tcard::after{
+      content:"";
+      position:absolute;
+      left:14px;
+      top:12px;
+      width:54px;
+      height:54px;
+
+      /* SVG con dos comillas (exactamente 2) */
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cpath d='M26.5 16C18.2 19.7 13 27.5 13 36.2C13 45.7 18.8 52 27.2 52c7 0 12.3-4.8 12.3-11.8c0-6.5-4.4-11.1-10.8-11.1c-.9 0-1.7.1-2.4.3c.9-5.3 4-9.3 9.1-12.1L26.5 16zM52 16c-8.3 3.7-13.5 11.5-13.5 20.2C38.5 45.7 44.3 52 52.7 52c7 0 12.3-4.8 12.3-11.8c0-6.5-4.4-11.1-10.8-11.1c-.9 0-1.7.1-2.4.3c.9-5.3 4-9.3 9.1-12.1L52 16z' fill='%23000000' fill-opacity='.12'/%3E%3C/svg%3E");
+      background-repeat:no-repeat;
+      background-size:contain;
+
+      transform: rotate(-10deg);
+      filter: drop-shadow(0 14px 22px rgba(0,0,0,.08));
+      pointer-events:none;
+      z-index:1;
+    }
+
+    .stars{
+      display:flex;
+      align-items:center;
+      gap:4px;
+      margin: 0 0 10px;
+      position:relative;
+      z-index:2;
+
+      /* aire para comillas */
+      padding-left: 62px;
+    }
+    .star{ width:16px; height:16px; opacity:.95; }
+    .stars .label{
+      margin-left:8px;
+      font-size:12.5px;
+      color: rgba(0,0,0,.62);
+      font-weight:950;
+    }
+
+    .tquote{
+      margin:0;
+      font-size: 14.6px;
+      line-height: 1.58;
+      position: relative;
+      z-index:2;
+      padding-left: 62px; /* aire para comillas */
+    }
+
+    .tfooter{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      margin-top:14px;
+      padding-top:12px;
+      border-top: 1px solid rgba(0,0,0,.08);
+      position: relative;
+      z-index:2;
+    }
+    .tname{
+      font-weight:950;
+      font-size: 13.5px;
+      color: rgba(0,0,0,.88);
+    }
+    .tmeta{
+      color: rgba(0,0,0,.62);
+      font-size: 12.5px;
+      font-weight:700;
+    }
+    .tbadge{
+      font-size:12px;
+      font-weight:950;
+      padding:7px 10px;
+      border-radius:999px;
+      border:1px solid rgba(0,0,0,.10);
+      background: var(--brandSoft);
+      color: rgba(0,0,0,.78);
+      white-space:nowrap;
+    }
+
+    .videoCard{
+      border: 1px solid rgba(0,0,0,.10);
+      background:
+        linear-gradient(90deg,
+          rgba(174,72,202,.18),
+          rgba(203,108,230,.14),
+          rgba(208,215,221,.50)
+        );
+    }
+    .videoInner{ position:relative; z-index:1; }
+    .videoCardTitle{
+      margin:0 0 8px;
+      font-size:16px;
+      font-weight:950;
+      letter-spacing:.2px;
+    }
+    .videoSub{
+      margin:0 0 14px;
+      color: rgba(0,0,0,.62);
+      font-size: 13.5px;
+      max-width: 70ch;
+      font-weight:700;
+    }
+    .videoWrap{
+      position: relative;
+      width:100%;
+      border-radius: 16px;
+      overflow:hidden;
+      border:1px solid rgba(0,0,0,.12);
+      box-shadow: 0 16px 44px rgba(0,0,0,.18);
+      background: rgba(255,255,255,.55);
+      aspect-ratio: 16 / 9;
+    }
+
+    label{display:block; font-weight:950; margin:10px 0 6px}
+    .field{
+      width:100%;
+      padding:12px 12px;
+      border-radius:14px;
+      border:1px solid rgba(0,0,0,.12);
+      outline:none;
+      color: rgba(0,0,0,.88);
+      background: rgba(255,255,255,.62);
+      box-shadow: 0 10px 24px rgba(0,0,0,.10);
+    }
+    .field--gradient{
+      background:
+        linear-gradient(90deg,
+          rgba(208,215,221,.78),
+          rgba(191,200,214,.72),
+          rgba(203,108,230,.22)
+        );
+    }
+    select.field{
+      appearance:none;
+      -webkit-appearance:none;
+      -moz-appearance:none;
+      padding-right:42px;
+      cursor:pointer;
+      font-weight:800;
+    }
+    .selectWrap{ position:relative; }
+    .selectWrap::after{
+      content:"▾";
+      position:absolute;
+      right:14px;
+      top:50%;
+      transform:translateY(-50%);
+      color: rgba(0,0,0,.66);
+      pointer-events:none;
+      font-size:16px;
+      font-weight:900;
+    }
+    select.field option{
+      background: var(--white);
+      color: rgba(0,0,0,.88);
+    }
+
+    .resultBox{
+      display:none;
+      margin-bottom:14px;
+      border-radius: 18px;
+      padding:18px;
+      border:1px solid rgba(0,0,0,.10);
+      background: var(--brandSoft);
+      box-shadow: 0 16px 44px rgba(0,0,0,.14);
+      position:relative;
+      overflow:hidden;
+    }
+    .resultBox::before{
+      content:"";
+      position:absolute;
+      inset:-2px;
+      background:
+        radial-gradient(520px 220px at 18% 0%, rgba(203,108,230,.18), transparent 60%),
+        radial-gradient(520px 220px at 88% 10%, rgba(174,72,202,.16), transparent 60%),
+        radial-gradient(520px 220px at 50% 90%, rgba(191,200,214,.30), transparent 60%);
+      opacity:.95;
+      pointer-events:none;
+    }
+    .resultBox > *{ position:relative; z-index:1; }
+
+    .resultTitle{
+      margin:0 0 8px;
+      font-weight:950;
+      letter-spacing:.18px;
+      color: rgba(0,0,0,.62);
+      font-size: 13px;
+      text-transform: uppercase;
+    }
+
+    .resultAvatar{
+      margin:0;
+      font-weight: 1000;
+      letter-spacing: .6px;
+      line-height: 1.03;
+      font-size: clamp(40px, 6.5vw, 76px);
+      background: var(--brandGrad);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      text-shadow: 0 10px 30px rgba(0,0,0,.12);
+    }
+
+    .resultHint{
+      margin: 10px 0 0;
+      color: rgba(0,0,0,.62);
+      font-weight: 800;
+      font-size: 13.5px;
+      max-width: 70ch;
+    }
+
+    @keyframes popIn {
+      0%   { opacity:0; transform: translateY(10px) scale(.98); }
+      60%  { opacity:1; transform: translateY(0) scale(1.01); }
+      100% { opacity:1; transform: translateY(0) scale(1); }
+    }
+    .pop{ animation: popIn .42s ease-out both; }
+
+    svg.star path{ fill: url(#gStar); }
+
+    .videoFallback{
+      display:flex;
+      flex-direction:column;
+      gap:12px;
+      padding:14px;
+      aspect-ratio: auto;
+    }
+
+    .videoFallback .thumb{
+      position:relative;
+      display:block;
+      width:100%;
+      border-radius: 14px;
+      overflow:hidden;
+      border:1px solid rgba(0,0,0,.12);
+      background: rgba(255,255,255,.55);
+      aspect-ratio: 16 / 9;
+      text-decoration:none;
+    }
+
+    .videoFallback img{
+      width:100%;
+      height:100%;
+      object-fit:cover;
+      display:block;
+      transform: scale(1.02);
+    }
+
+    .videoFallback .playBadge{
+      position:absolute;
+      inset:auto auto 14px 14px;
+      width:56px;
+      height:56px;
+      border-radius:999px;
+      display:grid;
+      place-items:center;
+      font-weight:1000;
+      font-size:20px;
+      color: rgba(0,0,0,.90);
+      background: var(--brandSoft);
+      border:1px solid rgba(0,0,0,.10);
+      box-shadow: 0 16px 44px rgba(0,0,0,.18);
+      backdrop-filter: blur(10px);
+    }
+
+    .videoActions{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="nav">
+    <div class="navin">
+      <a class="brand" href="#" onclick="go('#dashboard'); return false;">
+        <img class="logo" src="assets/logo-amorproofn.png" alt="Logo AmorProof" />
+        <span class="brandText">AmorProof</span>
+      </a>
+
+      <div class="btns">
+        <button class="btn" onclick="go('#dashboard')">Home</button>
+        <button class="btn" onclick="go('#testimonios')">Testimonios</button>
+        <button class="btn primary" onclick="go('#formulario')">Prueba gratis</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="wrap">
+    <header>
+      <div class="hero" id="dashboard">
+        <div class="card">
+          <h1>Sintoniza tu mente y corazón para cumplir lo que deseas: un día a la vez.</h1>
+          <p class="sub">
+            Combinamos autodiagnóstico y acciones personalizadas para transformar la identidad en acción sostenida y avance real hacia tus metas.
+          </p>
+
+          <div style="margin-top:14px; display:flex; gap:10px; flex-wrap:wrap;">
+            <button class="btn primary" onclick="go('#formulario')">Prueba gratis</button>
+            <button class="btn" onclick="go('#testimonios')">Ver testimonios</button>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <section id="testimonios">
+      <div class="sectionTitle">
+        <h2>Las personas que han aplicado nuestra metodología dicen:</h2>
+        <div class="hint"></div>
+      </div>
+
+      <div class="testis">
+
+        <div class="card tcard">
+          <div class="stars" aria-label="5 de 5 estrellas">
+            <svg class="star" viewBox="0 0 24 24" aria-hidden="true">
+              <defs>
+                <linearGradient id="gStar" x1="0" x2="1">
+                  <stop offset="0" stop-color="#AE48CA"/>
+                  <stop offset="1" stop-color="#CB6CE6"/>
+                </linearGradient>
+              </defs>
+              <path d="M12 17.3l-6.18 3.73 1.64-7.03L2 9.24l7.19-.62L12 2l2.81 6.62 7.19.62-5.46 4.76 1.64 7.03L12 17.3z"/>
+            </svg>
+            <svg class="star" viewBox="0 0 24 24"><path d="M12 17.3l-6.18 3.73 1.64-7.03L2 9.24l7.19-.62L12 2l2.81 6.62 7.19.62-5.46 4.76 1.64 7.03L12 17.3z"/></svg>
+            <svg class="star" viewBox="0 0 24 24"><path d="M12 17.3l-6.18 3.73 1.64-7.03L2 9.24l7.19-.62L12 2l2.81 6.62 7.19.62-5.46 4.76 1.64 7.03L12 17.3z"/></svg>
+            <svg class="star" viewBox="0 0 24 24"><path d="M12 17.3l-6.18 3.73 1.64-7.03L2 9.24l7.19-.62L12 2l2.81 6.62 7.19.62-5.46 4.76 1.64 7.03L12 17.3z"/></svg>
+            <svg class="star" viewBox="0 0 24 24"><path d="M12 17.3l-6.18 3.73 1.64-7.03L2 9.24l7.19-.62L12 2l2.81 6.62 7.19.62-5.46 4.76 1.64 7.03L12 17.3z"/></svg>
+            <span class="label">5.0</span>
+          </div>
+
+          <p class="tquote">
+            Con la estructura que me aportó la metodología, aprendí a reconocer qué actitudes no resuenan conmigo y a elegir conscientemente el tipo de persona que quiero ser. Fue un proceso de autodescubrimiento fundamental para mi equilibrio emocional.
+          </p>
+
+          <div class="tfooter">
+            <div>
+              <div class="tname">Isela N.</div>
+              <div class="tmeta">Participante</div>
+            </div>
+            <div class="tbadge">Transformación</div>
+          </div>
+        </div>
+
+        <div class="card tcard">
+          <div class="stars" aria-label="5 de 5 estrellas">
+            <svg class="star" viewBox="0 0 24 24"><path d="M12 17.3l-6.18 3.73 1.64-7.03L2 9.24l7.19-.62L12 2l2.81 6.62 7.19.62-5.46 4.76 1.64 7.03L12 17.3z"/></svg>
+            <svg class="star" viewBox="0 0 24 24"><path d="M12 17.3l-6.18 3.73 1.64-7.03L2 9.24l7.19-.62L12 2l2.81 6.62 7.19.62-5.46 4.76 1.64 7.03L12 17.3z"/></svg>
+            <svg class="star" viewBox="0 0 24 24"><path d="M12 17.3l-6.18 3.73 1.64-7.03L2 9.24l7.19-.62L12 2l2.81 6.62 7.19.62-5.46 4.76 1.64 7.03L12 17.3z"/></svg>
+            <svg class="star" viewBox="0 0 24 24"><path d="M12 17.3l-6.18 3.73 1.64-7.03L2 9.24l7.19-.62L12 2l2.81 6.62 7.19.62-5.46 4.76 1.64 7.03L12 17.3z"/></svg>
+            <svg class="star" viewBox="0 0 24 24"><path d="M12 17.3l-6.18 3.73 1.64-7.03L2 9.24l7.19-.62L12 2l2.81 6.62 7.19.62-5.46 4.76 1.64 7.03L12 17.3z"/></svg>
+            <span class="label">5.0</span>
+          </div>
+
+          <p class="tquote">
+            Gracias a la metodología, aprendí a gestionar mis emociones y a entender la raíz de mis comportamientos. Logré identificar aquello que me hacía repetir errores y procrastinar. Ahora me gestiono mejor y he transformado mi relación conmigo y con los demás.
+          </p>
+
+          <div class="tfooter">
+            <div>
+              <div class="tname">Fernando C.</div>
+              <div class="tmeta">Participante</div>
+            </div>
+            <div class="tbadge">Claridad</div>
+          </div>
+        </div>
+
+        <div class="card tcard">
+          <div class="stars" aria-label="5 de 5 estrellas">
+            <svg class="star" viewBox="0 0 24 24"><path d="M12 17.3l-6.18 3.73 1.64-7.03L2 9.24l7.19-.62L12 2l2.81 6.62 7.19.62-5.46 4.76 1.64 7.03L12 17.3z"/></svg>
+            <svg class="star" viewBox="0 0 24 24"><path d="M12 17.3l-6.18 3.73 1.64-7.03L2 9.24l7.19-.62L12 2l2.81 6.62 7.19.62-5.46 4.76 1.64 7.03L12 17.3z"/></svg>
+            <svg class="star" viewBox="0 0 24 24"><path d="M12 17.3l-6.18 3.73 1.64-7.03L2 9.24l7.19-.62L12 2l2.81 6.62 7.19.62-5.46 4.76 1.64 7.03L12 17.3z"/></svg>
+            <svg class="star" viewBox="0 0 24 24"><path d="M12 17.3l-6.18 3.73 1.64-7.03L2 9.24l7.19-.62L12 2l2.81 6.62 7.19.62-5.46 4.76 1.64 7.03L12 17.3z"/></svg>
+            <svg class="star" viewBox="0 0 24 24"><path d="M12 17.3l-6.18 3.73 1.64-7.03L2 9.24l7.19-.62L12 2l2.81 6.62 7.19.62-5.46 4.76 1.64 7.03L12 17.3z"/></svg>
+            <span class="label">5.0</span>
+          </div>
+
+          <p class="tquote">
+            La metodología me ha servido para reconocer mi caos interno, vaciar creencias limitantes y ubicarme desde dónde genero un nuevo orden. El resultado ha sido congruencia y disfrute de mi proceso.
+          </p>
+
+          <div class="tfooter">
+            <div>
+              <div class="tname">Mónica A.</div>
+              <div class="tmeta">Participante</div>
+            </div>
+            <div class="tbadge">Congruencia</div>
+          </div>
+        </div>
+
+        <div class="card tcard">
+          <div class="stars" aria-label="5 de 5 estrellas">
+            <svg class="star" viewBox="0 0 24 24"><path d="M12 17.3l-6.18 3.73 1.64-7.03L2 9.24l7.19-.62L12 2l2.81 6.62 7.19.62-5.46 4.76 1.64 7.03L12 17.3z"/></svg>
+            <svg class="star" viewBox="0 0 24 24"><path d="M12 17.3l-6.18 3.73 1.64-7.03L2 9.24l7.19-.62L12 2l2.81 6.62 7.19.62-5.46 4.76 1.64 7.03L12 17.3z"/></svg>
+            <svg class="star" viewBox="0 0 24 24"><path d="M12 17.3l-6.18 3.73 1.64-7.03L2 9.24l7.19-.62L12 2l2.81 6.62 7.19.62-5.46 4.76 1.64 7.03L12 17.3z"/></svg>
+            <svg class="star" viewBox="0 0 24 24"><path d="M12 17.3l-6.18 3.73 1.64-7.03L2 9.24l7.19-.62L12 2l2.81 6.62 7.19.62-5.46 4.76 1.64 7.03L12 17.3z"/></svg>
+            <svg class="star" viewBox="0 0 24 24"><path d="M12 17.3l-6.18 3.73 1.64-7.03L2 9.24l7.19-.62L12 2l2.81 6.62 7.19.62-5.46 4.76 1.64 7.03L12 17.3z"/></svg>
+            <span class="label">5.0</span>
+          </div>
+
+          <p class="tquote">
+            Hoy disfruto de una vida más consciente donde puedo regular mis emociones ante los actos de otras personas; eso hace que viva la vida que yo decido y merezco vivir. Conocer esta metodología ha sido mi mejor inversión.
+          </p>
+
+          <div class="tfooter">
+            <div>
+              <div class="tname">Lisseth A.</div>
+              <div class="tmeta">Participante</div>
+            </div>
+            <div class="tbadge">Calma</div>
+          </div>
+        </div>
+
+        <div class="card videoCard wide">
+          <div class="videoInner">
+            <h3 class="videoCardTitle">Testimonio en video</h3>
+            <p class="videoSub">Una historia real, en primera persona.</p>
+
+            <div class="stars" aria-label="5 de 5 estrellas">
+              <svg class="star" viewBox="0 0 24 24"><path d="M12 17.3l-6.18 3.73 1.64-7.03L2 9.24l7.19-.62L12 2l2.81 6.62 7.19.62-5.46 4.76 1.64 7.03L12 17.3z"/></svg>
+              <svg class="star" viewBox="0 0 24 24"><path d="M12 17.3l-6.18 3.73 1.64-7.03L2 9.24l7.19-.62L12 2l2.81 6.62 7.19.62-5.46 4.76 1.64 7.03L12 17.3z"/></svg>
+              <svg class="star" viewBox="0 0 24 24"><path d="M12 17.3l-6.18 3.73 1.64-7.03L2 9.24l7.19-.62L12 2l2.81 6.62 7.19.62-5.46 4.76 1.64 7.03L12 17.3z"/></svg>
+              <svg class="star" viewBox="0 0 24 24"><path d="M12 17.3l-6.18 3.73 1.64-7.03L2 9.24l7.19-.62L12 2l2.81 6.62 7.19.62-5.46 4.76 1.64 7.03L12 17.3z"/></svg>
+              <svg class="star" viewBox="0 0 24 24"><path d="M12 17.3l-6.18 3.73 1.64-7.03L2 9.24l7.19-.62L12 2l2.81 6.62 7.19.62-5.46 4.76 1.64 7.03L12 17.3z"/></svg>
+              <span class="label">5.0</span>
+            </div>
+
+            <div class="videoWrap videoFallback">
+              <a class="thumb"
+                 href="https://www.youtube.com/shorts/O7PLqkOWNfs"
+                 target="_blank" rel="noopener"
+                 aria-label="Ver testimonio en YouTube">
+                <img
+                  src="https://i.ytimg.com/vi/O7PLqkOWNfs/hqdefault.jpg"
+                  alt="Miniatura del testimonio en video">
+                <span class="playBadge" aria-hidden="true">▶</span>
+              </a>
+
+              <div class="videoActions">
+                <a class="btn primary"
+                   href="https://www.youtube.com/shorts/O7PLqkOWNfs"
+                   target="_blank" rel="noopener">
+                  Ver video en YouTube
+                </a>
+                <button class="btn" type="button" onclick="copyLinkYT()">
+                  Copiar link
+                </button>
+              </div>
+            </div>
+
+            <div class="tfooter" style="margin-top:14px;">
+              <div>
+                <div class="tname">Tamara</div>
+                <div class="tmeta">Participante</div>
+              </div>
+              <div class="tbadge">Video real</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <section id="formulario">
+      <div class="sectionTitle">
+        <h2>Autodiagnóstico</h2>
+        <div class="hint"></div>
+      </div>
+
+      <div class="card">
+        <div class="resultBox" id="resultadoAvatar" aria-live="polite">
+          <p class="resultTitle">Tu avatar:</p>
+          <p class="resultAvatar" id="avatarTexto">—</p>
+          <p class="resultHint">Guárdalo. Te va a servir como brújula para los próximos pasos.</p>
+        </div>
+
+        <form id="amorproofForm"
+              name="amorproof-leads"
+              method="POST"
+              data-netlify="true"
+              data-netlify-honeypot="bot-field"
+              action="/thanks.html">
+
+          <input type="hidden" name="form-name" value="amorproof-leads" />
+          <p style="display:none;">
+            <label>No llenar: <input name="bot-field" /></label>
+          </p>
+
+          <input type="hidden" name="cuadrante_peirce" id="cuadrante_peirce" value="">
+          <input type="hidden" name="avatar" id="avatar_hidden" value="">
+
+          <label>¿Cómo describirías tu plan actual para alcanzar tu meta?</label>
+          <div class="selectWrap">
+            <select name="plan" id="plan" class="field field--gradient" required>
+              <option value="" disabled selected>Selecciona A, B, C o D</option>
+              <option value="A">A. Sigo fielmente los manuales y lo que los expertos dicen</option>
+              <option value="B">B. No tengo plan</option>
+              <option value="C">C. Mi plan está pausado hasta que consiga el dinero o lo que me falta</option>
+              <option value="D">D. Mi plan cambia, según me dicta mi intuición o mi ánimo</option>
+            </select>
+          </div>
+
+          <label>¿Qué emoción predomina cuando piensas en tu falta de avance?</label>
+          <div class="selectWrap">
+            <select name="emocion" id="emocion" class="field field--gradient" required>
+              <option value="" disabled selected>Selecciona A, B, C o D</option>
+              <option value="A">A. Ansiedad, por no estar a la altura de lo que se espera de mi</option>
+              <option value="B">B. Desvalorización, siento que mi escasez define quien soy</option>
+              <option value="C">C. Confusión, aveces euforia y a veces apagado</option>
+              <option value="D">D. Parálisis, una sensación de que mi esfuerzo es inutil</option>
+            </select>
+          </div>
+
+          <label>¿Qué sucede en los momentos en los que debes dar respuesta?</label>
+          <div class="selectWrap">
+            <select name="respuesta" id="respuesta" class="field field--gradient" required>
+              <option value="" disabled selected>Selecciona A, B, C o D</option>
+              <option value="A">A. Me fuerzo a trabajar por un resultado pero sin claridad ni pasión</option>
+              <option value="B">B. Abandono la acción antes de empezar, el miedo me borra del mapa</option>
+              <option value="C">C. En lugar de usar mi energía para hacerlo, la uso para explicar por qué otra vez no lo haré</option>
+              <option value="D">D. Los factores externos influyen en mis decisiones</option>
+            </select>
+          </div>
+
+          <div style="margin-top:12px; display:flex; gap:10px; flex-wrap:wrap;">
+            <button class="btn primary" type="submit">Enviar</button>
+          </div>
+        </form>
+      </div>
+    </section>
+
+    <footer>
+      © <span id="year"></span> AmorProof
+    </footer>
+  </div>
+
+  <script>
+    function go(hash){
+      const el = document.querySelector(hash);
+      if(!el) return;
+      el.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+    document.getElementById("year").textContent = new Date().getFullYear();
+
+    function copyLinkYT(){
+      const url = "https://www.youtube.com/shorts/O7PLqkOWNfs";
+      navigator.clipboard.writeText(url).then(() => {
+        alert("Link copiado ✅");
+      }).catch(() => {
+        prompt("Copia el link:", url);
+      });
+    }
+
+    const mapPlan = { A:"Posible", B:"Imposible", C:"Necesario", D:"Contingente" };
+    const mapEmocion = { A:"Posible", B:"Necesario", C:"Contingente", D:"Imposible" };
+    const mapRespuesta = { A:"Posible", B:"Imposible", C:"Necesario", D:"Contingente" };
+
+    const avatarPorCuadrante = {
+      "Posible": "Bufón",
+      "Imposible": "Ilusionista",
+      "Necesario": "Ananké",
+      "Contingente": "Ares"
+    };
+
+    const tieBreakOrder = ["Imposible","Necesario","Contingente","Posible"];
+
+    function pickWinner(scores){
+      let max = -1;
+      for (const k in scores) max = Math.max(max, scores[k]);
+      const tied = Object.keys(scores).filter(k => scores[k] === max);
+      if (tied.length === 1) return tied[0];
+      for (const q of tieBreakOrder){
+        if (tied.includes(q)) return q;
+      }
+      return tied[0];
+    }
+
+    const form = document.getElementById("amorproofForm");
+    const resultBox = document.getElementById("resultadoAvatar");
+
+    form.addEventListener("submit", function(e){
+      e.preventDefault();
+
+      const plan = document.getElementById("plan").value;
+      const emocion = document.getElementById("emocion").value;
+      const respuesta = document.getElementById("respuesta").value;
+
+      const scores = { Posible:0, Imposible:0, Necesario:0, Contingente:0 };
+
+      const q1 = mapPlan[plan];
+      const q2 = mapEmocion[emocion];
+      const q3 = mapRespuesta[respuesta];
+
+      scores[q1]++; scores[q2]++; scores[q3]++;
+
+      const ganador = pickWinner(scores);
+      const avatar = avatarPorCuadrante[ganador];
+
+      document.getElementById("avatarTexto").textContent = avatar;
+
+      resultBox.classList.remove("pop");
+      resultBox.style.display = "block";
+      void resultBox.offsetWidth;
+      resultBox.classList.add("pop");
+
+      resultBox.scrollIntoView({ behavior: "smooth", block: "center" });
+
+      document.getElementById("cuadrante_peirce").value = ganador;
+      document.getElementById("avatar_hidden").value = avatar;
+
+      // setTimeout(() => form.submit(), 900);
+    });
+  </script>
+</body>
+</html>
