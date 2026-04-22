@@ -475,23 +475,31 @@ const S={
 /* ---- DATOS DE CUADRANTES ---- */
 const QD={
   posible:{
-    shadow:'El Bufón',positive:'El Arquitecto',
+    shadow:'El Bufón',positive:'Tiké',
+    crossQ:'necesario',
     belief:'Avanzas, pero dentro de límites que nunca cruzas.',
+    crossMsg:'El cruce es hacia Necesario — de limitarte a comprometerte de verdad.',
     color:'posible'
   },
-  imposible:{
-    shadow:'El Ilusionista',positive:'El Realista Curioso',
-    belief:'Una creencia profunda dice que esto no puede ocurrir para ti.',
-    color:'imposible'
-  },
   necesario:{
-    shadow:'Ananké',positive:'El Comprometido',
+    shadow:'Ananké',positive:'Esfinge',
+    crossQ:'posible',
     belief:'Tu bienestar depende de que el deseo llegue. Hay apego que paraliza.',
+    crossMsg:'El cruce es hacia Posible — de necesitarlo a construirlo desde ti.',
     color:'necesario'
   },
+  imposible:{
+    shadow:'El Ilusionista',positive:'El Mago',
+    crossQ:'contingente',
+    belief:'Una creencia profunda dice que esto no puede ocurrir para ti.',
+    crossMsg:'El cruce es hacia Contingente — de "no puede" a "puede ocurrir, lo exploro".',
+    color:'imposible'
+  },
   contingente:{
-    shadow:'Ares',positive:'El Explorador',
+    shadow:'Ares',positive:'Shatria',
+    crossQ:'imposible',
     belief:'Ves posibilidades, pero no te comprometes con ningún camino.',
+    crossMsg:'El cruce es hacia Imposible — de "tal vez" a nombrar el límite real y testearlo.',
     color:'contingente'
   }
 };
@@ -681,11 +689,12 @@ function calcDx(){
 
 function renderDx(){
   const q=QD[S.diagQ];
+  const crossQ=QD[q.crossQ];
   document.getElementById('qdisplay').innerHTML=`
     <div class="arch-journey">
       <div class="arch-box shadow">
         <div class="arch-name-shadow">${q.shadow}</div>
-        <div class="arch-role">Arquetipo sombra — dónde estás</div>
+        <div class="arch-role">Tu cárcel — cuadrante ${S.diagQ}</div>
       </div>
       <div class="arch-arrow-col">
         <div class="arch-arrow-line"></div>
@@ -694,10 +703,11 @@ function renderDx(){
       </div>
       <div class="arch-box positive">
         <div class="arch-name-pos">${q.positive}</div>
-        <div class="arch-role">Arquetipo positivo — hacia dónde vas</div>
+        <div class="arch-role">Cruce hacia ${q.crossQ} — tu destino</div>
       </div>
     </div>
-    <div class="arch-belief">"${q.belief}"</div>`;
+    <div class="arch-belief">"${q.belief}"</div>
+    <div style="font-size:12px;color:#534AB7;background:#EEEDFE;border-radius:10px;padding:8px 16px;margin:0 1.5rem 1rem;text-align:center;border:1px solid rgba(127,119,221,.25)">${q.crossMsg}</div>`;
 }
 
 async function callAI(){
@@ -716,15 +726,17 @@ El resultado (cómo sabrá que llegó): "${S.coords[3]}"
 
 Cuadrante diagnosticado: ${S.diagQ}
 Arquetipo sombra actual: ${q.shadow}
-Arquetipo positivo (destino): ${q.positive}
-Creencia central: "${q.belief}"
+Cuadrante de cruce (destino): ${q.crossQ}
+Arquetipo positivo destino: ${q.positive}
+Creencia central de la cárcel: "${q.belief}"
+Naturaleza del cruce: "${q.crossMsg}"
 
 Respuestas al diagnóstico:
 ${qlist}
 
 Genera:
-1) Análisis de 2-3 párrafos cortos que nombre patrones concretos vistos en sus respuestas. Conecta las 4 coordenadas con la cárcel mental identificada. Sé específico con lo que la persona escribió.
-2) Guía PSH para cruzar de ${q.shadow} hacia ${q.positive} esta semana — tres bloques accionables.
+1) Análisis de 2-3 párrafos que nombre patrones concretos en sus respuestas. Explica por qué está atrapada en ${S.diagQ} y qué significa el cruce hacia ${q.crossQ} para su deseo específico.
+2) Guía PSH para hacer el cruce de ${q.shadow} hacia ${q.positive} esta semana — el movimiento es hacia ${q.crossQ}, no hacia ${S.diagQ} mejorado.
 
 Responde SOLO en JSON válido sin bloques de código:
 {"analisis":"...","pienso":"...","siento":"...","hago":"..."}`;
@@ -736,7 +748,7 @@ Responde SOLO en JSON válido sin bloques de código:
       body:JSON.stringify({
         model:'claude-sonnet-4-20250514',
         max_tokens:1000,
-        system:`Eres guía de la metodología AmorProof basada en los 4 cuadrantes modales de Peirce. Los arquetipos sombra son: El Bufón (Posible), El Ilusionista (Imposible), Ananké (Necesario), Ares (Contingente). Los arquetipos positivos son: El Arquitecto, El Realista Curioso, El Comprometido, El Explorador. Tono cálido, directo, sin condescendencia. Sin markdown, sin asteriscos, sin viñetas. Solo párrafos fluidos. El PSH debe ser accionable esta semana con verbos concretos. Responde SOLO en JSON válido.`,
+        system:`Eres guía de la metodología AmorProof basada en los 4 cuadrantes modales de Peirce. IMPORTANTE — los cruces son diagonales, no dentro del mismo cuadrante: El Bufón (Posible) cruza hacia Tiké (Necesario). Ananké (Necesario) cruza hacia Esfinge (Posible). El Ilusionista (Imposible) cruza hacia El Mago (Contingente). Ares (Contingente) cruza hacia Shatria (Imposible). La salida de la cárcel NO es mejorar dentro del mismo cuadrante — es cruzar al opuesto. Tono cálido, directo, sin condescendencia. Sin markdown, sin asteriscos, sin viñetas. Solo párrafos fluidos. El PSH debe ser accionable esta semana con verbos concretos orientados al cruce. Responde SOLO en JSON válido.`,
         messages:[{role:'user',content:prompt}]
       })
     });
@@ -765,7 +777,7 @@ async function finalResult(){
   const q=QD[S.diagQ];
 
   document.getElementById('trans-badge-wrap').innerHTML=moved
-    ?`<div class="trans-badge moved">Se detecta movimiento hacia ${q.positive}</div>`
+    ?`<div class="trans-badge moved">Se detecta movimiento hacia ${q.positive} — cuadrante ${q.crossQ}</div>`
     :`<div class="trans-badge same">El proceso apenas comienza — cada paso cuenta</div>`;
 
   const prompt=`La persona comenzó como ${q.shadow} (cuadrante ${S.diagQ}) con el deseo declarado: "${S.coords[1]}".
@@ -775,16 +787,18 @@ Desde dónde: "${S.coords[0]}"
 Por dónde: "${S.coords[2]}"
 El resultado esperado: "${S.coords[3]}"
 
-Después del proceso PSH hacia ${q.positive}:
+El cruce que debía hacer: de ${S.diagQ} hacia ${q.crossQ} (de ${q.shadow} hacia ${q.positive}).
+
+Después del proceso PSH:
 - Pensamiento cambió: ${S.verif.v1||'no indicado'}
 - Acción nueva: ${S.verif.v2||'no indicado'}
 - Cercanía al deseo antes: ${before}/10, hoy: ${now}/10 (delta: ${delta>=0?'+'+delta:delta})
 - Sensación actual: ${v3||'no indicado'}
 
 Escribe un mensaje de cierre de 2-3 párrafos:
-1) Reconoce el movimiento real sin exagerar (si delta es 0 o negativo, dilo con honestidad amable)
-2) Nombra si hay señal de cruce entre arquetipos o qué indica el estado actual
-3) Un paso concreto y específico para la próxima semana
+1) Reconoce el movimiento real sin exagerar. Si delta es 0 o negativo, dilo con honestidad amable.
+2) Nombra si hay señal de cruce hacia ${q.crossQ} o qué indica el estado actual.
+3) Un paso concreto y específico para la próxima semana orientado al cruce.
 
 Sin markdown. Solo texto plano.`;
 
