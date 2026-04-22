@@ -1,0 +1,198 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>AmorProof — Testimonios</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --lav:#AE48CA;--mag:#CB6CE6;--cel:#D0D7DD;
+  --grad:linear-gradient(135deg,#AE48CA 0%,#CB6CE6 60%,#D0D7DD 100%);
+  --grad-soft:linear-gradient(135deg,rgba(174,72,202,.12),rgba(203,108,230,.08),rgba(208,215,221,.15));
+  --text:#1a1a2e;--muted:#6b6b80;
+  --card:rgba(255,255,255,.82);--card-border:rgba(174,72,202,.14);
+  --radius:20px;--max:1040px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+  font-family:'Outfit',sans-serif;color:var(--text);line-height:1.6;
+  background:#f4f0f8;
+  background-image:
+    radial-gradient(ellipse 800px 500px at 10% 0%,rgba(174,72,202,.22) 0%,transparent 65%),
+    radial-gradient(ellipse 600px 400px at 90% 10%,rgba(203,108,230,.18) 0%,transparent 60%),
+    radial-gradient(ellipse 700px 600px at 50% 100%,rgba(191,200,214,.35) 0%,transparent 60%);
+  min-height:100vh;
+}
+.nav{position:sticky;top:0;z-index:100;background:rgba(255,255,255,.72);backdrop-filter:blur(18px);border-bottom:1px solid rgba(174,72,202,.1)}
+.nav-in{max-width:var(--max);margin:0 auto;display:flex;align-items:center;justify-content:space-between;padding:14px 24px;gap:16px}
+.brand{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--text)}
+.brand-logo{width:38px;height:38px;border-radius:10px;background:var(--grad);display:flex;align-items:center;justify-content:center;box-shadow:0 4px 14px rgba(174,72,202,.3)}
+.brand-logo svg{width:22px;height:22px;fill:#fff}
+.brand-name{font-family:'DM Serif Display',serif;font-size:20px;letter-spacing:-.2px}
+.nav-links{display:flex;align-items:center;gap:8px}
+.nav-link{text-decoration:none;color:var(--muted);font-size:14px;font-weight:500;padding:8px 14px;border-radius:999px;transition:all .2s}
+.nav-link:hover{color:var(--text);background:rgba(174,72,202,.07)}
+.nav-cta{background:var(--grad);color:#fff;padding:9px 20px;border-radius:999px;font-size:14px;font-weight:600;text-decoration:none;box-shadow:0 4px 16px rgba(174,72,202,.3);transition:all .2s}
+.nav-cta:hover{transform:translateY(-1px);box-shadow:0 6px 22px rgba(174,72,202,.4)}
+.wrap{max-width:var(--max);margin:0 auto;padding:0 24px}
+.card{background:var(--card);border:1px solid var(--card-border);border-radius:var(--radius);backdrop-filter:blur(12px);box-shadow:0 8px 32px rgba(174,72,202,.08),0 1px 0 rgba(255,255,255,.8) inset}
+
+.page-header{padding:56px 0 40px;text-align:center}
+.section-label{font-size:12px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--lav);margin-bottom:.75rem}
+.page-title{font-family:'DM Serif Display',serif;font-size:clamp(30px,4vw,48px);line-height:1.1;margin-bottom:1rem}
+.page-sub{font-size:16px;color:var(--muted);max-width:50ch;margin:0 auto}
+
+.video-section{margin-bottom:32px}
+.video-card{padding:24px}
+.video-label{font-size:12px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:16px}
+.video-wrap{
+  width:100%;border-radius:14px;overflow:hidden;
+  border:1px solid rgba(174,72,202,.15);
+  background:#1a1a2e;
+  aspect-ratio:16/9;
+}
+.video-wrap video{width:100%;height:100%;display:block;object-fit:contain}
+.video-name{margin-top:14px;font-weight:600;font-size:15px}
+
+.testis-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:20px;margin-bottom:48px}
+.tcard{padding:28px;position:relative;overflow:hidden}
+.tcard::after{
+  content:'\201C';
+  position:absolute;right:20px;top:12px;
+  font-family:'DM Serif Display',serif;font-size:80px;line-height:1;
+  color:rgba(174,72,202,.1);pointer-events:none;
+}
+.stars{display:flex;gap:3px;margin-bottom:16px}
+.star{width:15px;height:15px}
+.star path{fill:url(#gstar)}
+.tquote{font-size:15px;line-height:1.68;color:var(--text);margin-bottom:20px;font-style:italic}
+.tname{font-weight:700;font-size:13px;color:var(--lav)}
+
+footer{border-top:1px solid rgba(174,72,202,.1);padding:28px 0;color:var(--muted);font-size:13px}
+.footer-in{max-width:var(--max);margin:0 auto;padding:0 24px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}
+.footer-link{color:var(--muted);text-decoration:none;transition:color .2s}
+.footer-link:hover{color:var(--lav)}
+
+@media(max-width:768px){
+  .testis-grid{grid-template-columns:1fr}
+  .nav-links .nav-link{display:none}
+}
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute">
+  <defs>
+    <linearGradient id="gstar" x1="0" x2="1">
+      <stop offset="0" stop-color="#AE48CA"/>
+      <stop offset="1" stop-color="#CB6CE6"/>
+    </linearGradient>
+  </defs>
+</svg>
+
+<nav class="nav">
+  <div class="nav-in">
+    <a class="brand" href="index.html">
+      <div class="brand-logo">
+        <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z"/></svg>
+      </div>
+      <span class="brand-name">AmorProof</span>
+    </a>
+    <div class="nav-links">
+      <a class="nav-link" href="index.html">Inicio</a>
+      <a class="nav-link" href="testimonios.html">Testimonios</a>
+      <a class="nav-cta" href="prueba.html">Prueba gratis</a>
+    </div>
+  </div>
+</nav>
+
+<div class="wrap">
+  <div class="page-header">
+    <div class="section-label">Resultados reales</div>
+    <h1 class="page-title">Lo que dicen quienes<br>ya recorrieron el camino</h1>
+    <p class="page-sub">Personas que identificaron su cárcel mental y comenzaron a moverse.</p>
+  </div>
+
+  <div class="video-section">
+    <div class="card video-card">
+      <div class="video-label">Testimonio en video</div>
+      <div class="video-wrap">
+        <video controls playsinline preload="metadata">
+          <source src="assets/tamara.mp4" type="video/mp4"/>
+          Tu navegador no puede reproducir este video.
+        </video>
+      </div>
+      <div class="video-name">Tamara</div>
+    </div>
+  </div>
+
+  <div class="testis-grid">
+    <div class="card tcard">
+      <div class="stars">
+        <svg class="star" viewBox="0 0 24 24"><path d="M12 17.3l-6.18 3.73 1.64-7.03L2 9.24l7.19-.62L12 2l2.81 6.62 7.19.62-5.46 4.76 1.64 7.03L12 17.3z"/></svg>
+        <svg class="star" viewBox="0 0 24 24"><path d="M12 17.3l-6.18 3.73 1.64-7.03L2 9.24l7.19-.62L12 2l2.81 6.62 7.19.62-5.46 4.76 1.64 7.03L12 17.3z"/></svg>
+        <svg class="star" viewBox="0 0 24 24"><path d="M12 17.3l-6.18 3.73 1.64-7.03L2 9.24l7.19-.62L12 2l2.81 6.62 7.19.62-5.46 4.76 1.64 7.03L12 17.3z"/></svg>
+        <svg class="star" viewBox="0 0 24 24"><path d="M12 17.3l-6.18 3.73 1.64-7.03L2 9.24l7.19-.62L12 2l2.81 6.62 7.19.62-5.46 4.76 1.64 7.03L12 17.3z"/></svg>
+        <svg class="star" viewBox="0 0 24 24"><path d="M12 17.3l-6.18 3.73 1.64-7.03L2 9.24l7.19-.62L12 2l2.81 6.62 7.19.62-5.46 4.76 1.64 7.03L12 17.3z"/></svg>
+      </div>
+      <p class="tquote">Con la estructura que me aportó la metodología, aprendí a reconocer qué actitudes no resuenan conmigo y a elegir conscientemente el tipo de persona que quiero ser. Fue un proceso de autodescubrimiento fundamental para mi equilibrio emocional.</p>
+      <div class="tname">Isela N.</div>
+    </div>
+
+    <div class="card tcard">
+      <div class="stars">
+        <svg class="star" viewBox="0 0 24 24"><path d="M12 17.3l-6.18 3.73 1.64-7.03L2 9.24l7.19-.62L12 2l2.81 6.62 7.19.62-5.46 4.76 1.64 7.03L12 17.3z"/></svg>
+        <svg class="star" viewBox="0 0 24 24"><path d="M12 17.3l-6.18 3.73 1.64-7.03L2 9.24l7.19-.62L12 2l2.81 6.62 7.19.62-5.46 4.76 1.64 7.03L12 17.3z"/></svg>
+        <svg class="star" viewBox="0 0 24 24"><path d="M12 17.3l-6.18 3.73 1.64-7.03L2 9.24l7.19-.62L12 2l2.81 6.62 7.19.62-5.46 4.76 1.64 7.03L12 17.3z"/></svg>
+        <svg class="star" viewBox="0 0 24 24"><path d="M12 17.3l-6.18 3.73 1.64-7.03L2 9.24l7.19-.62L12 2l2.81 6.62 7.19.62-5.46 4.76 1.64 7.03L12 17.3z"/></svg>
+        <svg class="star" viewBox="0 0 24 24"><path d="M12 17.3l-6.18 3.73 1.64-7.03L2 9.24l7.19-.62L12 2l2.81 6.62 7.19.62-5.46 4.76 1.64 7.03L12 17.3z"/></svg>
+      </div>
+      <p class="tquote">Gracias a la metodología, aprendí a gestionar mis emociones y a entender la raíz de mis comportamientos. Logré identificar aquello que me hacía repetir errores y procrastinar. Ahora me gestiono mejor y he transformado mi relación conmigo y con los demás.</p>
+      <div class="tname">Fernando C.</div>
+    </div>
+
+    <div class="card tcard">
+      <div class="stars">
+        <svg class="star" viewBox="0 0 24 24"><path d="M12 17.3l-6.18 3.73 1.64-7.03L2 9.24l7.19-.62L12 2l2.81 6.62 7.19.62-5.46 4.76 1.64 7.03L12 17.3z"/></svg>
+        <svg class="star" viewBox="0 0 24 24"><path d="M12 17.3l-6.18 3.73 1.64-7.03L2 9.24l7.19-.62L12 2l2.81 6.62 7.19.62-5.46 4.76 1.64 7.03L12 17.3z"/></svg>
+        <svg class="star" viewBox="0 0 24 24"><path d="M12 17.3l-6.18 3.73 1.64-7.03L2 9.24l7.19-.62L12 2l2.81 6.62 7.19.62-5.46 4.76 1.64 7.03L12 17.3z"/></svg>
+        <svg class="star" viewBox="0 0 24 24"><path d="M12 17.3l-6.18 3.73 1.64-7.03L2 9.24l7.19-.62L12 2l2.81 6.62 7.19.62-5.46 4.76 1.64 7.03L12 17.3z"/></svg>
+        <svg class="star" viewBox="0 0 24 24"><path d="M12 17.3l-6.18 3.73 1.64-7.03L2 9.24l7.19-.62L12 2l2.81 6.62 7.19.62-5.46 4.76 1.64 7.03L12 17.3z"/></svg>
+      </div>
+      <p class="tquote">La metodología me ha servido para reconocer mi caos interno, vaciar creencias limitantes y ubicarme desde dónde genero un nuevo orden. El resultado ha sido congruencia y disfrute de mi proceso.</p>
+      <div class="tname">Mónica A.</div>
+    </div>
+
+    <div class="card tcard">
+      <div class="stars">
+        <svg class="star" viewBox="0 0 24 24"><path d="M12 17.3l-6.18 3.73 1.64-7.03L2 9.24l7.19-.62L12 2l2.81 6.62 7.19.62-5.46 4.76 1.64 7.03L12 17.3z"/></svg>
+        <svg class="star" viewBox="0 0 24 24"><path d="M12 17.3l-6.18 3.73 1.64-7.03L2 9.24l7.19-.62L12 2l2.81 6.62 7.19.62-5.46 4.76 1.64 7.03L12 17.3z"/></svg>
+        <svg class="star" viewBox="0 0 24 24"><path d="M12 17.3l-6.18 3.73 1.64-7.03L2 9.24l7.19-.62L12 2l2.81 6.62 7.19.62-5.46 4.76 1.64 7.03L12 17.3z"/></svg>
+        <svg class="star" viewBox="0 0 24 24"><path d="M12 17.3l-6.18 3.73 1.64-7.03L2 9.24l7.19-.62L12 2l2.81 6.62 7.19.62-5.46 4.76 1.64 7.03L12 17.3z"/></svg>
+        <svg class="star" viewBox="0 0 24 24"><path d="M12 17.3l-6.18 3.73 1.64-7.03L2 9.24l7.19-.62L12 2l2.81 6.62 7.19.62-5.46 4.76 1.64 7.03L12 17.3z"/></svg>
+      </div>
+      <p class="tquote">Hoy disfruto de una vida más consciente donde puedo regular mis emociones ante los actos de otras personas. Conocer esta metodología ha sido mi mejor inversión.</p>
+      <div class="tname">Lisseth A.</div>
+    </div>
+  </div>
+
+  <div style="text-align:center;padding:0 0 64px">
+    <a href="prueba.html" style="display:inline-flex;align-items:center;gap:8px;padding:14px 28px;border-radius:999px;background:linear-gradient(135deg,#AE48CA,#CB6CE6);color:#fff;font-family:'Outfit',sans-serif;font-size:15px;font-weight:600;text-decoration:none;box-shadow:0 4px 20px rgba(174,72,202,.32);transition:all .22s">
+      Quiero vivir esto yo también
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </a>
+  </div>
+</div>
+
+<footer>
+  <div class="footer-in">
+    <span>© <span id="yr"></span> AmorProof</span>
+    <a class="footer-link" href="mailto:soyamorproof@gmail.com">soyamorproof@gmail.com</a>
+  </div>
+</footer>
+<script>document.getElementById('yr').textContent=new Date().getFullYear()</script>
+</body>
+</html>

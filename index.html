@@ -1,0 +1,332 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>AmorProof — Sintoniza tu mente y consigue lo que deseas</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --lav:#AE48CA;--mag:#CB6CE6;--cel:#D0D7DD;--azul:#BFC8D6;
+  --grad:linear-gradient(135deg,#AE48CA 0%,#CB6CE6 60%,#D0D7DD 100%);
+  --grad-soft:linear-gradient(135deg,rgba(174,72,202,.12),rgba(203,108,230,.08),rgba(208,215,221,.15));
+  --text:#1a1a2e;--muted:#6b6b80;--white:#fff;
+  --card:rgba(255,255,255,.82);--card-border:rgba(174,72,202,.14);
+  --radius:20px;--max:1040px;
+  font-size:16px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+  font-family:'Outfit',sans-serif;color:var(--text);line-height:1.6;
+  background:#f4f0f8;
+  background-image:
+    radial-gradient(ellipse 800px 500px at 10% 0%,rgba(174,72,202,.22) 0%,transparent 65%),
+    radial-gradient(ellipse 600px 400px at 90% 10%,rgba(203,108,230,.18) 0%,transparent 60%),
+    radial-gradient(ellipse 700px 600px at 50% 100%,rgba(191,200,214,.35) 0%,transparent 60%);
+  min-height:100vh;
+}
+
+/* NAV */
+.nav{
+  position:sticky;top:0;z-index:100;
+  background:rgba(255,255,255,.72);
+  backdrop-filter:blur(18px);
+  border-bottom:1px solid rgba(174,72,202,.1);
+}
+.nav-in{
+  max-width:var(--max);margin:0 auto;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:14px 24px;gap:16px;
+}
+.brand{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--text)}
+.brand-logo{
+  width:38px;height:38px;border-radius:10px;
+  background:var(--grad);
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:0 4px 14px rgba(174,72,202,.3);
+}
+.brand-logo svg{width:22px;height:22px;fill:#fff}
+.brand-name{font-family:'DM Serif Display',serif;font-size:20px;letter-spacing:-.2px}
+.nav-links{display:flex;align-items:center;gap:8px}
+.nav-link{
+  text-decoration:none;color:var(--muted);font-size:14px;font-weight:500;
+  padding:8px 14px;border-radius:999px;transition:all .2s;
+}
+.nav-link:hover{color:var(--text);background:rgba(174,72,202,.07)}
+.nav-cta{
+  background:var(--grad);color:#fff;
+  padding:9px 20px;border-radius:999px;
+  font-size:14px;font-weight:600;text-decoration:none;
+  box-shadow:0 4px 16px rgba(174,72,202,.3);
+  transition:all .2s;
+}
+.nav-cta:hover{transform:translateY(-1px);box-shadow:0 6px 22px rgba(174,72,202,.4)}
+
+/* WRAP */
+.wrap{max-width:var(--max);margin:0 auto;padding:0 24px}
+
+/* CARDS */
+.card{
+  background:var(--card);
+  border:1px solid var(--card-border);
+  border-radius:var(--radius);
+  backdrop-filter:blur(12px);
+  box-shadow:0 8px 32px rgba(174,72,202,.08),0 1px 0 rgba(255,255,255,.8) inset;
+}
+
+/* BUTTONS */
+.btn{
+  display:inline-flex;align-items:center;gap:8px;
+  padding:12px 24px;border-radius:999px;
+  font-family:'Outfit',sans-serif;font-size:15px;font-weight:600;
+  cursor:pointer;transition:all .22s;border:none;text-decoration:none;
+}
+.btn-primary{
+  background:var(--grad);color:#fff;
+  box-shadow:0 4px 20px rgba(174,72,202,.32);
+}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 8px 28px rgba(174,72,202,.42)}
+.btn-ghost{
+  background:rgba(255,255,255,.7);color:var(--text);
+  border:1px solid rgba(174,72,202,.2);
+}
+.btn-ghost:hover{background:#fff;border-color:rgba(174,72,202,.4)}
+
+/* HERO */
+.hero{padding:80px 0 60px}
+.hero-grid{display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:center}
+.hero-tag{
+  display:inline-flex;align-items:center;gap:6px;
+  background:rgba(174,72,202,.1);color:#8b2daa;
+  font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;
+  padding:5px 14px;border-radius:999px;border:1px solid rgba(174,72,202,.2);
+  margin-bottom:1.25rem;
+}
+.hero-tag-dot{width:6px;height:6px;border-radius:50%;background:#AE48CA;animation:blink 2s ease-in-out infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+.hero-title{
+  font-family:'DM Serif Display',serif;
+  font-size:clamp(36px,4.5vw,58px);
+  line-height:1.08;letter-spacing:-.5px;
+  margin-bottom:1.25rem;
+}
+.hero-title em{font-style:italic;color:var(--lav)}
+.hero-sub{font-size:17px;color:var(--muted);line-height:1.65;max-width:48ch;margin-bottom:2rem}
+.hero-btns{display:flex;gap:12px;flex-wrap:wrap}
+
+.hero-visual{position:relative}
+.hero-card{padding:28px;position:relative;overflow:hidden}
+.hero-card::before{
+  content:'';position:absolute;inset:0;
+  background:var(--grad-soft);opacity:.6;pointer-events:none;
+}
+.quadrant-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;position:relative;z-index:1}
+.q-cell{
+  padding:16px;border-radius:14px;
+  border:1px solid rgba(174,72,202,.15);
+  background:rgba(255,255,255,.6);
+}
+.q-cell-name{font-family:'DM Serif Display',serif;font-size:17px;margin-bottom:4px}
+.q-cell-arch{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+.q-cell.pos .q-cell-name{color:#0F6E56}
+.q-cell.imp .q-cell-name{color:#A32D2D}
+.q-cell.nec .q-cell-name{color:#854F0B}
+.q-cell.con .q-cell-name{color:#534AB7}
+.q-center{
+  position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+  width:48px;height:48px;border-radius:50%;
+  background:var(--grad);
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:0 4px 20px rgba(174,72,202,.4);
+  z-index:2;
+}
+.q-center svg{width:22px;height:22px;fill:#fff}
+
+/* FEATURES */
+.features{padding:60px 0}
+.section-label{
+  font-size:12px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--lav);margin-bottom:.75rem;
+}
+.section-title{
+  font-family:'DM Serif Display',serif;
+  font-size:clamp(28px,3vw,40px);line-height:1.15;
+  margin-bottom:1rem;
+}
+.features-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-top:40px}
+.feat-card{padding:28px}
+.feat-num{
+  font-family:'DM Serif Display',serif;font-size:36px;
+  background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent;
+  margin-bottom:.75rem;line-height:1;
+}
+.feat-title{font-size:16px;font-weight:600;margin-bottom:.5rem}
+.feat-body{font-size:14px;color:var(--muted);line-height:1.6}
+
+/* CTA BAND */
+.cta-band{
+  padding:64px 0;
+}
+.cta-inner{
+  background:var(--grad);
+  border-radius:28px;
+  padding:56px 48px;
+  text-align:center;
+  position:relative;overflow:hidden;
+}
+.cta-inner::before{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse 60% 60% at 50% 0%,rgba(255,255,255,.15),transparent);
+  pointer-events:none;
+}
+.cta-title{
+  font-family:'DM Serif Display',serif;font-size:clamp(28px,3.5vw,44px);
+  color:#fff;margin-bottom:.75rem;position:relative;
+}
+.cta-sub{font-size:16px;color:rgba(255,255,255,.78);margin-bottom:2rem;position:relative}
+.btn-white{
+  background:#fff;color:var(--lav);
+  font-weight:700;
+  box-shadow:0 4px 20px rgba(0,0,0,.15);
+  position:relative;
+}
+.btn-white:hover{transform:translateY(-2px);box-shadow:0 8px 28px rgba(0,0,0,.2)}
+
+/* FOOTER */
+footer{
+  border-top:1px solid rgba(174,72,202,.1);
+  padding:28px 0;
+  color:var(--muted);font-size:13px;
+}
+.footer-in{
+  max-width:var(--max);margin:0 auto;padding:0 24px;
+  display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;
+}
+.footer-link{color:var(--muted);text-decoration:none;transition:color .2s}
+.footer-link:hover{color:var(--lav)}
+
+@media(max-width:768px){
+  .hero-grid{grid-template-columns:1fr}
+  .hero-visual{display:none}
+  .features-grid{grid-template-columns:1fr}
+  .nav-links .nav-link{display:none}
+}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-in">
+    <a class="brand" href="index.html">
+      <div class="brand-logo">
+        <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z"/></svg>
+      </div>
+      <span class="brand-name">AmorProof</span>
+    </a>
+    <div class="nav-links">
+      <a class="nav-link" href="index.html">Inicio</a>
+      <a class="nav-link" href="testimonios.html">Testimonios</a>
+      <a class="nav-cta" href="prueba.html">Prueba gratis</a>
+    </div>
+  </div>
+</nav>
+
+<div class="wrap">
+  <section class="hero">
+    <div class="hero-grid">
+      <div>
+        <div class="hero-tag">
+          <span class="hero-tag-dot"></span>
+          Metodología basada en lógica modal
+        </div>
+        <h1 class="hero-title">
+          Sintoniza tu mente<br>para conseguir<br><em>lo que deseas</em>
+        </h1>
+        <p class="hero-sub">
+          Identificamos la cárcel mental que te impide avanzar y te damos un camino personalizado para cruzar hacia tu arquetipo positivo.
+        </p>
+        <div class="hero-btns">
+          <a class="btn btn-primary" href="prueba.html">
+            Comenzar gratis
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </a>
+          <a class="btn btn-ghost" href="testimonios.html">Ver testimonios</a>
+        </div>
+      </div>
+
+      <div class="hero-visual">
+        <div class="card hero-card">
+          <div class="quadrant-grid">
+            <div class="q-cell pos">
+              <div class="q-cell-name">El Bufón</div>
+              <div class="q-cell-arch">→ El Arquitecto</div>
+            </div>
+            <div class="q-cell imp">
+              <div class="q-cell-name">El Ilusionista</div>
+              <div class="q-cell-arch">→ Realista Curioso</div>
+            </div>
+            <div class="q-cell nec">
+              <div class="q-cell-name">Ananké</div>
+              <div class="q-cell-arch">→ El Comprometido</div>
+            </div>
+            <div class="q-cell con">
+              <div class="q-cell-name">Ares</div>
+              <div class="q-cell-arch">→ El Explorador</div>
+            </div>
+          </div>
+          <div class="q-center">
+            <svg viewBox="0 0 24 24"><path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4L12 17l-6.2 4.3 2.4-7.4L2 9.4h7.6z"/></svg>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="features">
+    <div class="section-label">Cómo funciona</div>
+    <h2 class="section-title">Tres momentos que cambian<br>tu relación con el deseo</h2>
+    <div class="features-grid">
+      <div class="card feat-card">
+        <div class="feat-num">01</div>
+        <div class="feat-title">Declaras y diagnosticas</div>
+        <div class="feat-body">Describes tu deseo a través de 4 coordenadas y respondes 10 preguntas. Identificamos en qué cárcel mental operas hoy.</div>
+      </div>
+      <div class="card feat-card">
+        <div class="feat-num">02</div>
+        <div class="feat-title">Recibes tu guía PSH</div>
+        <div class="feat-body">La IA genera un camino personalizado — Pienso, Siento, Hago — para cruzar de tu arquetipo sombra al positivo.</div>
+      </div>
+      <div class="card feat-card">
+        <div class="feat-num">03</div>
+        <div class="feat-title">Verificas tu movimiento</div>
+        <div class="feat-body">Después de trabajar tu proceso, medimos si empezaste a habitar tu arquetipo positivo o si ya lo alcanzaste.</div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<div class="wrap">
+  <div class="cta-band">
+    <div class="cta-inner">
+      <h2 class="cta-title">¿En qué cárcel mental<br>estás hoy?</h2>
+      <p class="cta-sub">El diagnóstico tarda menos de 10 minutos. Es gratuito.</p>
+      <a class="btn btn-white" href="prueba.html">
+        Descúbrelo ahora
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </a>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <div class="footer-in">
+    <span>© <span id="yr"></span> AmorProof</span>
+    <a class="footer-link" href="mailto:soyamorproof@gmail.com">soyamorproof@gmail.com</a>
+  </div>
+</footer>
+
+<script>document.getElementById('yr').textContent=new Date().getFullYear()</script>
+</body>
+</html>

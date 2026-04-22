@@ -1,0 +1,838 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>AmorProof — Diagnóstico gratuito</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --lav:#AE48CA;--mag:#CB6CE6;--cel:#D0D7DD;
+  --grad:linear-gradient(135deg,#AE48CA 0%,#CB6CE6 60%,#D0D7DD 100%);
+  --text:#1a1a2e;--muted:#6b6b80;
+  --card:rgba(255,255,255,.86);--card-border:rgba(174,72,202,.14);
+  --radius:20px;--max:760px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+  font-family:'Outfit',sans-serif;color:var(--text);line-height:1.6;
+  background:#f4f0f8;
+  background-image:
+    radial-gradient(ellipse 800px 500px at 10% 0%,rgba(174,72,202,.22) 0%,transparent 65%),
+    radial-gradient(ellipse 600px 400px at 90% 10%,rgba(203,108,230,.18) 0%,transparent 60%),
+    radial-gradient(ellipse 700px 600px at 50% 100%,rgba(191,200,214,.35) 0%,transparent 60%);
+  min-height:100vh;
+}
+
+/* NAV */
+.nav{position:sticky;top:0;z-index:100;background:rgba(255,255,255,.72);backdrop-filter:blur(18px);border-bottom:1px solid rgba(174,72,202,.1)}
+.nav-in{max-width:1040px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;padding:14px 24px;gap:16px}
+.brand{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--text)}
+.brand-logo{width:38px;height:38px;border-radius:10px;background:var(--grad);display:flex;align-items:center;justify-content:center;box-shadow:0 4px 14px rgba(174,72,202,.3)}
+.brand-logo svg{width:22px;height:22px;fill:#fff}
+.brand-name{font-family:'DM Serif Display',serif;font-size:20px;letter-spacing:-.2px}
+.nav-links{display:flex;align-items:center;gap:8px}
+.nav-link{text-decoration:none;color:var(--muted);font-size:14px;font-weight:500;padding:8px 14px;border-radius:999px;transition:all .2s}
+.nav-link:hover{color:var(--text);background:rgba(174,72,202,.07)}
+.nav-cta{background:var(--grad);color:#fff;padding:9px 20px;border-radius:999px;font-size:14px;font-weight:600;text-decoration:none;box-shadow:0 4px 16px rgba(174,72,202,.3)}
+
+/* MAIN SHELL */
+.shell{max-width:var(--max);margin:0 auto;padding:40px 24px 80px}
+
+/* OUTER PROGRESS */
+.outer-prog{display:flex;align-items:center;gap:0;margin-bottom:36px}
+.op-step{
+  display:flex;align-items:center;gap:8px;
+  font-size:13px;color:var(--muted);font-weight:500;
+  padding:6px 0;flex:1;
+}
+.op-step:not(:last-child)::after{
+  content:'';flex:1;height:1px;background:rgba(174,72,202,.15);margin:0 8px;
+}
+.op-dot{
+  width:28px;height:28px;border-radius:50%;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;
+  font-size:12px;font-weight:700;
+  background:rgba(174,72,202,.1);color:var(--lav);
+  border:1.5px solid rgba(174,72,202,.2);
+  transition:all .3s;
+}
+.op-step.done .op-dot{background:var(--lav);color:#fff;border-color:var(--lav)}
+.op-step.active .op-dot{background:var(--grad);color:#fff;border:none;box-shadow:0 4px 12px rgba(174,72,202,.35)}
+.op-step.active{color:var(--text)}
+.op-step-label{display:none}
+@media(min-width:540px){.op-step-label{display:inline}}
+
+/* SCREENS */
+.scr{display:none}.scr.on{display:block}
+
+/* CARDS */
+.card{background:var(--card);border:1px solid var(--card-border);border-radius:var(--radius);backdrop-filter:blur(12px);box-shadow:0 8px 32px rgba(174,72,202,.08),0 1px 0 rgba(255,255,255,.8) inset}
+
+/* PHASE TAG */
+.phase-tag{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;padding:4px 12px;border-radius:999px;background:rgba(174,72,202,.1);color:#8b2daa;border:1px solid rgba(174,72,202,.2);margin-bottom:1.25rem}
+
+h2{font-family:'DM Serif Display',serif;font-size:clamp(26px,4vw,36px);line-height:1.15;margin-bottom:.5rem}
+.screen-sub{font-size:15px;color:var(--muted);line-height:1.6;margin-bottom:2rem}
+
+/* WIZARD */
+.wiz-shell{position:relative;min-height:320px}
+.wiz-step{
+  position:absolute;inset:0;
+  opacity:0;transform:translateX(32px);
+  pointer-events:none;
+  transition:opacity .35s cubic-bezier(.4,0,.2,1),transform .35s cubic-bezier(.4,0,.2,1);
+}
+.wiz-step.active{opacity:1;transform:translateX(0);pointer-events:all;position:relative}
+.wiz-step.exit-l{opacity:0;transform:translateX(-32px);pointer-events:none}
+
+.coord-tag{display:inline-flex;align-items:center;gap:7px;font-size:11px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;padding:5px 12px;border-radius:999px;background:rgba(255,255,255,.7);border:1px solid var(--card-border);color:var(--muted);margin-bottom:1rem;width:fit-content}
+.coord-num{width:20px;height:20px;border-radius:50%;background:var(--grad);color:#fff;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+
+.wiz-q{font-size:19px;font-weight:600;color:var(--text);line-height:1.35;margin-bottom:.4rem}
+.wiz-hint{font-size:13px;color:var(--muted);line-height:1.6;margin-bottom:1.1rem}
+
+.wiz-ta{
+  width:100%;padding:14px 16px;
+  font-size:15px;font-family:'Outfit',sans-serif;
+  border-radius:14px;border:1.5px solid rgba(174,72,202,.2);
+  background:rgba(255,255,255,.8);color:var(--text);
+  outline:none;resize:none;transition:border .2s,box-shadow .2s;
+  line-height:1.55;min-height:90px;
+}
+.wiz-ta:focus{border-color:var(--lav);box-shadow:0 0 0 3px rgba(174,72,202,.1)}
+.char-c{font-size:11px;color:var(--muted);text-align:right;margin-top:4px;height:16px}
+
+.sem-signal{
+  margin-top:.65rem;padding:9px 13px;border-radius:12px;
+  font-size:12px;line-height:1.5;transition:all .3s;min-height:36px;
+}
+.sem-signal.h{opacity:0;pointer-events:none}
+.sem-signal.necesario{background:#FAEEDA;color:#854F0B;border:1px solid rgba(239,159,39,.4)}
+.sem-signal.posible{background:#E1F5EE;color:#0F6E56;border:1px solid rgba(29,158,117,.4)}
+.sem-signal.imposible{background:#FCEBEB;color:#A32D2D;border:1px solid rgba(226,75,74,.4)}
+.sem-signal.contingente{background:#EEEDFE;color:#534AB7;border:1px solid rgba(127,119,221,.4)}
+
+.wiz-nav{display:flex;align-items:center;justify-content:space-between;margin-top:1.25rem;gap:12px}
+.wiz-dots{display:flex;gap:5px}
+.wd{width:6px;height:6px;border-radius:50%;background:rgba(174,72,202,.2);transition:all .3s}
+.wd.on{background:var(--lav);width:20px;border-radius:3px}
+.wd.dn{background:var(--lav);opacity:.4}
+
+.btn-next{display:inline-flex;align-items:center;gap:6px;padding:10px 22px;border-radius:999px;border:none;background:var(--grad);color:#fff;font-family:'Outfit',sans-serif;font-size:14px;font-weight:600;cursor:pointer;transition:all .2s;box-shadow:0 4px 14px rgba(174,72,202,.28)}
+.btn-next:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(174,72,202,.38)}
+.btn-next:disabled{opacity:.3;cursor:not-allowed;transform:none;box-shadow:none}
+.btn-back{display:inline-flex;align-items:center;gap:5px;padding:9px 16px;border-radius:999px;border:1px solid rgba(174,72,202,.2);background:rgba(255,255,255,.7);color:var(--muted);font-family:'Outfit',sans-serif;font-size:13px;cursor:pointer;transition:all .2s}
+.btn-back:hover{background:#fff;color:var(--text)}
+.btn-back.inv{opacity:0;pointer-events:none}
+
+/* SUMMARY */
+.sum-card{background:rgba(255,255,255,.7);border:1px solid var(--card-border);border-radius:14px;padding:4px 0;margin:1rem 0}
+.sum-row{padding:12px 18px;border-bottom:1px solid rgba(174,72,202,.08);display:grid;grid-template-columns:120px 1fr;gap:12px}
+.sum-row:last-child{border-bottom:none}
+.sum-label{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--lav);padding-top:2px}
+.sum-val{font-size:14px;color:var(--text);line-height:1.5}
+.confirm-btn{width:100%;padding:14px;border-radius:999px;border:none;background:var(--grad);color:#fff;font-family:'Outfit',sans-serif;font-size:15px;font-weight:600;cursor:pointer;transition:all .2s;box-shadow:0 4px 18px rgba(174,72,202,.3);display:flex;align-items:center;justify-content:center;gap:8px;margin-top:1.25rem}
+.confirm-btn:hover{transform:translateY(-1px);box-shadow:0 6px 24px rgba(174,72,202,.4)}
+
+/* QUESTIONS */
+.q-wrap{padding:1.25rem;margin-bottom:1rem}
+.q-num{font-size:11px;color:var(--muted);margin-bottom:.2rem;font-weight:500}
+.q-label{font-size:15px;font-weight:600;color:var(--text);margin-bottom:.75rem;line-height:1.4}
+.opts{display:grid;gap:8px}
+.opt{width:100%;text-align:left;padding:11px 15px;border-radius:12px;border:1.5px solid rgba(174,72,202,.15);background:rgba(255,255,255,.7);color:var(--text);font-family:'Outfit',sans-serif;font-size:14px;cursor:pointer;transition:all .18s;line-height:1.4}
+.opt:hover{background:#fff;border-color:rgba(174,72,202,.35)}
+.opt.sel{border-color:var(--lav);background:rgba(174,72,202,.08);color:#6b1e90}
+
+.likert-row{display:flex;gap:6px;margin-top:.4rem}
+.lbtn{flex:1;padding:8px 4px;border-radius:10px;border:1.5px solid rgba(174,72,202,.15);background:rgba(255,255,255,.7);font-family:'Outfit',sans-serif;font-size:14px;font-weight:600;cursor:pointer;text-align:center;transition:all .18s;color:var(--muted)}
+.lbtn:hover{background:#fff;border-color:rgba(174,72,202,.3)}
+.lbtn.sel{border-color:var(--lav);background:rgba(174,72,202,.08);color:#6b1e90}
+.likert-labels{display:flex;justify-content:space-between;font-size:11px;color:var(--muted);margin-top:5px}
+
+/* DIAGNOSIS RESULT */
+.arch-journey{display:grid;grid-template-columns:1fr 36px 1fr;gap:10px;align-items:center;padding:1.5rem}
+.arch-box{border-radius:14px;padding:1rem;text-align:center}
+.arch-box.shadow{background:#fff0f0;border:1.5px solid rgba(226,75,74,.25)}
+.arch-name-shadow{font-family:'DM Serif Display',serif;font-size:20px;color:#A32D2D;margin-bottom:.2rem}
+.arch-role{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.07em;color:var(--muted)}
+.arch-box.positive{background:#f0fbf5;border:1.5px solid rgba(29,158,117,.25)}
+.arch-name-pos{font-family:'DM Serif Display',serif;font-size:20px;color:#0F6E56;margin-bottom:.2rem}
+.arch-arrow-col{display:flex;flex-direction:column;align-items:center;gap:4px}
+.arch-arrow-line{width:1px;height:20px;background:linear-gradient(to bottom,rgba(174,72,202,.3),rgba(174,72,202,.3));flex:1}
+.arch-arrow-icon{width:28px;height:28px;border-radius:50%;background:var(--grad);display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 3px 10px rgba(174,72,202,.3)}
+.arch-arrow-icon svg{width:14px;height:14px;fill:#fff}
+.arch-belief{font-size:12px;color:var(--muted);line-height:1.5;padding:0 1.5rem 1rem;text-align:center;font-style:italic}
+
+/* AI BOX */
+.ai-box{background:rgba(248,245,252,.9);border:1px solid rgba(174,72,202,.15);border-radius:16px;padding:1.25rem;margin:.75rem 0}
+.ai-label{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.07em;color:var(--lav);margin-bottom:.65rem}
+.ai-text{font-size:14px;line-height:1.75;color:var(--text);white-space:pre-wrap}
+.ai-loading{display:flex;gap:5px;align-items:center;padding:.3rem 0}
+.ai-loading span{width:7px;height:7px;border-radius:50%;background:var(--lav);display:inline-block;animation:dp 1.2s ease-in-out infinite}
+.ai-loading span:nth-child(2){animation-delay:.18s}
+.ai-loading span:nth-child(3){animation-delay:.36s}
+@keyframes dp{0%,100%{opacity:.25;transform:scale(.8)}50%{opacity:1;transform:scale(1)}}
+
+/* PSH GRID */
+.psh-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:.75rem 0}
+.psh-card{border-radius:14px;padding:1rem;border:1px solid rgba(174,72,202,.15);background:rgba(255,255,255,.8)}
+.psh-pill{display:inline-block;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;padding:3px 10px;border-radius:999px;margin-bottom:.5rem}
+.psh-card:nth-child(1) .psh-pill{background:#EAF3DE;color:#27500A}
+.psh-card:nth-child(2) .psh-pill{background:#FAEEDA;color:#633806}
+.psh-card:nth-child(3) .psh-pill{background:#EEEDFE;color:#3C3489}
+.psh-body{font-size:13px;color:var(--muted);line-height:1.55}
+
+/* VERIFICATION */
+.scale-row{display:flex;align-items:center;gap:12px;margin:.4rem 0}
+.scale-label{font-size:13px;color:var(--muted);min-width:72px;font-weight:500}
+.scale-input{flex:1;accent-color:var(--lav)}
+.scale-val{font-size:15px;font-weight:700;min-width:28px;text-align:right;color:var(--text)}
+
+.trans-badge{display:inline-flex;align-items:center;gap:7px;padding:8px 16px;border-radius:999px;font-size:13px;font-weight:600;margin:.75rem 0}
+.trans-badge.moved{background:#EAF3DE;color:#27500A;border:1px solid rgba(63,109,17,.25)}
+.trans-badge.same{background:#FAEEDA;color:#633806;border:1px solid rgba(186,117,23,.25)}
+
+.divider{border:none;border-top:1px solid rgba(174,72,202,.1);margin:1.5rem 0}
+
+.btn-restart{display:inline-flex;align-items:center;gap:6px;padding:10px 20px;border-radius:999px;border:1px solid rgba(174,72,202,.2);background:rgba(255,255,255,.7);color:var(--muted);font-family:'Outfit',sans-serif;font-size:13px;cursor:pointer;transition:all .2s;margin-top:.75rem}
+.btn-restart:hover{background:#fff;color:var(--text)}
+
+footer{border-top:1px solid rgba(174,72,202,.1);padding:28px 0;color:var(--muted);font-size:13px;margin-top:40px}
+.footer-in{max-width:1040px;margin:0 auto;padding:0 24px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}
+.footer-link{color:var(--muted);text-decoration:none;transition:color .2s}
+.footer-link:hover{color:var(--lav)}
+
+@media(max-width:600px){
+  .psh-grid{grid-template-columns:1fr}
+  .nav-links .nav-link{display:none}
+  .arch-journey{grid-template-columns:1fr;grid-template-rows:auto auto auto}
+  .arch-arrow-col{flex-direction:row;height:28px}
+  .arch-arrow-line{width:20px;height:1px}
+}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-in">
+    <a class="brand" href="index.html">
+      <div class="brand-logo">
+        <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z"/></svg>
+      </div>
+      <span class="brand-name">AmorProof</span>
+    </a>
+    <div class="nav-links">
+      <a class="nav-link" href="index.html">Inicio</a>
+      <a class="nav-link" href="testimonios.html">Testimonios</a>
+      <a class="nav-cta" href="prueba.html">Prueba gratis</a>
+    </div>
+  </div>
+</nav>
+
+<div class="shell">
+
+  <!-- OUTER PROGRESS BAR -->
+  <div class="outer-prog" id="outer-prog">
+    <div class="op-step active" id="os0">
+      <div class="op-dot">1</div>
+      <span class="op-step-label">Deseo</span>
+    </div>
+    <div class="op-step" id="os1">
+      <div class="op-dot">2</div>
+      <span class="op-step-label">Diagnóstico</span>
+    </div>
+    <div class="op-step" id="os2">
+      <div class="op-dot">3</div>
+      <span class="op-step-label">PSH</span>
+    </div>
+    <div class="op-step" id="os3">
+      <div class="op-dot">4</div>
+      <span class="op-step-label">Verificación</span>
+    </div>
+  </div>
+
+  <!-- ===== PANTALLA 0: WIZARD ARISTOTÉLICO ===== -->
+  <div class="scr on" id="s0">
+    <div class="phase-tag">Momento 0 — declaración del deseo</div>
+    <h2>Cuéntanos tu deseo</h2>
+    <p class="screen-sub">Te haremos 4 preguntas breves. No hay respuestas correctas — hay respuestas tuyas.</p>
+
+    <div class="wiz-shell" id="wiz">
+
+      <div class="wiz-step active" id="ws0">
+        <div class="coord-tag"><span class="coord-num">1</span>Desde dónde</div>
+        <div class="wiz-q">¿Desde qué lugar estás viviendo esto hoy?</div>
+        <div class="wiz-hint">¿Cómo te sientes ahora mismo en relación a lo que quieres conseguir?</div>
+        <textarea class="wiz-ta" id="i0" maxlength="300" placeholder="Ej: Estoy cansada de esperar, siento que ya no depende de mí..." oninput="onWI(0)"></textarea>
+        <div class="char-c" id="cc0"></div>
+        <div class="sem-signal h" id="ss0"></div>
+        <div class="wiz-nav">
+          <button class="btn-back inv">← Anterior</button>
+          <div class="wiz-dots"><div class="wd on" id="wd0"></div><div class="wd" id="wd1"></div><div class="wd" id="wd2"></div><div class="wd" id="wd3"></div></div>
+          <button class="btn-next" id="wn0" onclick="nextW(1)" disabled>Siguiente <svg width="13" height="13" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+        </div>
+      </div>
+
+      <div class="wiz-step" id="ws1">
+        <div class="coord-tag"><span class="coord-num">2</span>Hacia dónde</div>
+        <div class="wiz-q">¿Qué es lo que deseas conseguir?</div>
+        <div class="wiz-hint">Descríbelo con tus palabras. Puede ser algo concreto o una sensación.</div>
+        <textarea class="wiz-ta" id="i1" maxlength="300" placeholder="Ej: Quiero tener una relación estable, sentirme en paz conmigo misma..." oninput="onWI(1)"></textarea>
+        <div class="char-c" id="cc1"></div>
+        <div class="sem-signal h" id="ss1"></div>
+        <div class="wiz-nav">
+          <button class="btn-back" onclick="prevW(0)"><svg width="13" height="13" viewBox="0 0 16 16" fill="none"><path d="M13 8H3M7 4L3 8l4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg> Anterior</button>
+          <div class="wiz-dots"><div class="wd dn"></div><div class="wd on"></div><div class="wd"></div><div class="wd"></div></div>
+          <button class="btn-next" id="wn1" onclick="nextW(2)" disabled>Siguiente <svg width="13" height="13" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+        </div>
+      </div>
+
+      <div class="wiz-step" id="ws2">
+        <div class="coord-tag"><span class="coord-num">3</span>Por dónde</div>
+        <div class="wiz-q">¿Qué has intentado hasta ahora para conseguirlo?</div>
+        <div class="wiz-hint">Sin juzgarte. Cuéntanos qué caminos has tomado — o por qué no has tomado ninguno.</div>
+        <textarea class="wiz-ta" id="i2" maxlength="300" placeholder="Ej: Lo intenté muchas veces pero siempre algo me detiene..." oninput="onWI(2)"></textarea>
+        <div class="char-c" id="cc2"></div>
+        <div class="sem-signal h" id="ss2"></div>
+        <div class="wiz-nav">
+          <button class="btn-back" onclick="prevW(1)"><svg width="13" height="13" viewBox="0 0 16 16" fill="none"><path d="M13 8H3M7 4L3 8l4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg> Anterior</button>
+          <div class="wiz-dots"><div class="wd dn"></div><div class="wd dn"></div><div class="wd on"></div><div class="wd"></div></div>
+          <button class="btn-next" id="wn2" onclick="nextW(3)" disabled>Siguiente <svg width="13" height="13" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+        </div>
+      </div>
+
+      <div class="wiz-step" id="ws3">
+        <div class="coord-tag"><span class="coord-num">4</span>El resultado</div>
+        <div class="wiz-q">¿Cómo sabrás que lo lograste?</div>
+        <div class="wiz-hint">¿Qué verías, sentirías o vivirías diferente cuando llegues ahí?</div>
+        <textarea class="wiz-ta" id="i3" maxlength="300" placeholder="Ej: Me sentiría tranquila, podría confiar en alguien de verdad..." oninput="onWI(3)"></textarea>
+        <div class="char-c" id="cc3"></div>
+        <div class="sem-signal h" id="ss3"></div>
+        <div class="wiz-nav">
+          <button class="btn-back" onclick="prevW(2)"><svg width="13" height="13" viewBox="0 0 16 16" fill="none"><path d="M13 8H3M7 4L3 8l4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg> Anterior</button>
+          <div class="wiz-dots"><div class="wd dn"></div><div class="wd dn"></div><div class="wd dn"></div><div class="wd on"></div></div>
+          <button class="btn-next" id="wn3" onclick="showSum()" disabled>Ver resumen <svg width="13" height="13" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+        </div>
+      </div>
+
+      <div class="wiz-step" id="ws4">
+        <div class="coord-tag" style="background:rgba(174,72,202,.1);border-color:rgba(174,72,202,.25);color:#7b2daa">Confirmación</div>
+        <div class="wiz-q">Esto es lo que nos contaste</div>
+        <div class="wiz-hint">Revisa antes de continuar al diagnóstico. Puedes editar si quieres.</div>
+        <div class="sum-card" id="sum-card"></div>
+        <button class="confirm-btn" onclick="goTo(1)">
+          Continuar al diagnóstico
+          <svg width="15" height="15" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <button class="btn-back" style="margin-top:.75rem" onclick="prevW(3)">
+          <svg width="13" height="13" viewBox="0 0 16 16" fill="none"><path d="M13 8H3M7 4L3 8l4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          Editar respuestas
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ===== PANTALLA 1: DIAGNÓSTICO ===== -->
+  <div class="scr" id="s1">
+    <div class="phase-tag">Momento 1 — diagnóstico</div>
+    <h2>Cuéntanos cómo te mueves</h2>
+    <p class="screen-sub">10 preguntas. Responde con lo primero que sientas, no con lo que crees que deberías sentir.</p>
+    <div id="qc"></div>
+    <button class="btn-next" id="btn-diag" onclick="calcDx()" disabled style="margin-top:.5rem">
+      Ver mi diagnóstico
+      <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </button>
+  </div>
+
+  <!-- ===== PANTALLA 2: PSH ===== -->
+  <div class="scr" id="s2">
+    <div class="phase-tag">Momento 2 — intervención PSH</div>
+    <h2>Tu cárcel mental y tu camino de salida</h2>
+    <p class="screen-sub">Esto es lo que encontramos. La IA genera tu guía personalizada para cruzar al arquetipo positivo.</p>
+
+    <div class="card" id="qdisplay"></div>
+
+    <div class="ai-box">
+      <div class="ai-label">Análisis personalizado</div>
+      <div class="ai-text" id="ai-analysis"><div class="ai-loading"><span></span><span></span><span></span></div></div>
+    </div>
+
+    <div class="divider"></div>
+    <div style="font-size:15px;font-weight:600;margin-bottom:.25rem">Tu guía PSH para esta semana</div>
+    <div style="font-size:13px;color:var(--muted);margin-bottom:.75rem">Pienso · Siento · Hago — tres movimientos concretos.</div>
+
+    <div class="psh-grid" id="psh-grid">
+      <div class="ai-box" style="margin:0"><div class="ai-loading"><span></span><span></span><span></span></div></div>
+      <div class="ai-box" style="margin:0"><div class="ai-loading"><span></span><span></span><span></span></div></div>
+      <div class="ai-box" style="margin:0"><div class="ai-loading"><span></span><span></span><span></span></div></div>
+    </div>
+
+    <button class="btn-next" onclick="goTo(3)" style="margin-top:1.5rem">
+      Registrar mi avance
+      <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </button>
+  </div>
+
+  <!-- ===== PANTALLA 3: VERIFICACIÓN ===== -->
+  <div class="scr" id="s3">
+    <div class="phase-tag">Momento 3 — verificación</div>
+    <h2>¿Dónde estás ahora?</h2>
+    <p class="screen-sub">Después de trabajar tu PSH, registra tu movimiento. Medimos si empezaste a cruzar hacia tu arquetipo positivo.</p>
+
+    <div class="card" style="padding:1.5rem;margin-bottom:1rem">
+
+      <div style="margin-bottom:1.25rem">
+        <div class="q-label">¿Tu manera de pensar sobre tu deseo cambió?</div>
+        <div class="opts">
+          <button class="opt" onclick="sv(this,'v1','si')">Sí, pienso diferente ahora</button>
+          <button class="opt" onclick="sv(this,'v1','algo')">Algo cambió, pero no completamente</button>
+          <button class="opt" onclick="sv(this,'v1','no')">Todavía lo veo igual</button>
+        </div>
+      </div>
+
+      <div style="margin-bottom:1.25rem">
+        <div class="q-label">¿Tomaste alguna acción diferente a las anteriores?</div>
+        <div class="opts">
+          <button class="opt" onclick="sv(this,'v2','si')">Sí, hice algo nuevo</button>
+          <button class="opt" onclick="sv(this,'v2','plan')">Lo estoy planeando</button>
+          <button class="opt" onclick="sv(this,'v2','no')">Aún no</button>
+        </div>
+      </div>
+
+      <div style="margin-bottom:1.25rem">
+        <div class="q-label">Cercanía a tu deseo — antes de empezar y hoy</div>
+        <div class="scale-row">
+          <span class="scale-label">Antes</span>
+          <input class="scale-input" type="range" min="1" max="10" value="3" step="1" id="sb" oninput="document.getElementById('vb').textContent=this.value">
+          <span class="scale-val" id="vb">3</span>
+        </div>
+        <div class="scale-row">
+          <span class="scale-label">Hoy</span>
+          <input class="scale-input" type="range" min="1" max="10" value="5" step="1" id="sn" oninput="document.getElementById('vn').textContent=this.value">
+          <span class="scale-val" id="vn">5</span>
+        </div>
+      </div>
+
+      <div>
+        <div class="q-label">¿Qué sensación tienes al pensar en tu deseo ahora?</div>
+        <div class="opts">
+          <button class="opt" onclick="sv(this,'v3','apertura')">Más apertura — veo posibilidades que antes no veía</button>
+          <button class="opt" onclick="sv(this,'v3','movimiento')">Movimiento — tomé o planeo tomar una acción concreta</button>
+          <button class="opt" onclick="sv(this,'v3','igual')">Similar — el proceso todavía no ha impactado cómo me siento</button>
+          <button class="opt" onclick="sv(this,'v3','resistencia')">Resistencia — algo en mí se opone a avanzar</button>
+        </div>
+      </div>
+
+    </div>
+
+    <button class="btn-next" id="btn-verif" onclick="finalResult()">
+      Ver mi resultado final
+      <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </button>
+
+    <div id="final-res" style="display:none;margin-top:1.5rem">
+      <div id="trans-badge-wrap"></div>
+      <div class="ai-box">
+        <div class="ai-label">Tu resultado</div>
+        <div class="ai-text" id="final-text"><div class="ai-loading"><span></span><span></span><span></span></div></div>
+      </div>
+      <button class="btn-restart" onclick="restart()">
+        <svg width="13" height="13" viewBox="0 0 16 16" fill="none"><path d="M2 8a6 6 0 1 1 .7 2.8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M2 11V8h3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Comenzar de nuevo
+      </button>
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  <div class="footer-in">
+    <span>© <span id="yr"></span> AmorProof</span>
+    <a class="footer-link" href="mailto:soyamorproof@gmail.com">soyamorproof@gmail.com</a>
+  </div>
+</footer>
+
+<script>
+/* ============================================================
+   ESTADO GLOBAL
+   Para conectar Supabase después, solo agregar llamadas a la
+   API de Supabase en las funciones calcDx() y finalResult()
+   pasando el objeto S como payload.
+   ============================================================ */
+const S={
+  coords:['','','',''],
+  coordSignals:[null,null,null,null],
+  initQ:'',
+  answers:{},
+  diagQ:'',
+  verif:{}
+};
+
+/* ---- DATOS DE CUADRANTES ---- */
+const QD={
+  posible:{
+    shadow:'El Bufón',positive:'El Arquitecto',
+    belief:'Avanzas, pero dentro de límites que nunca cruzas.',
+    color:'posible'
+  },
+  imposible:{
+    shadow:'El Ilusionista',positive:'El Realista Curioso',
+    belief:'Una creencia profunda dice que esto no puede ocurrir para ti.',
+    color:'imposible'
+  },
+  necesario:{
+    shadow:'Ananké',positive:'El Comprometido',
+    belief:'Tu bienestar depende de que el deseo llegue. Hay apego que paraliza.',
+    color:'necesario'
+  },
+  contingente:{
+    shadow:'Ares',positive:'El Explorador',
+    belief:'Ves posibilidades, pero no te comprometes con ningún camino.',
+    color:'contingente'
+  }
+};
+
+/* ---- REGLAS SEMÁNTICAS ---- */
+const SEM=[
+  {p:['necesito','me hace falta','me falta','requiero','dependo','no tengo'],q:'necesario',m:'Se percibe apego o dependencia.'},
+  {p:['quiero','quisiera','deseo','me gustaría','anhelo','aspiro'],q:'posible',m:'Se percibe intención activa.'},
+  {p:['no puedo','no logro','nunca','imposible','no soy capaz','dejé de creer','ya no creo'],q:'imposible',m:'Se percibe un bloqueo instalado.'},
+  {p:['quizás','tal vez','podría','a lo mejor','ojalá','veremos','no sé si'],q:'contingente',m:'Se percibe indecisión o apertura sin compromiso.'},
+  {p:['si ','cuando ','apenas ','hasta que','en cuanto','siempre que'],q:'necesario',m:'Se detecta condición externa para avanzar.'},
+  {p:['que él','que ella','que cambie','que me den','que me quieran'],q:'necesario',m:'El deseo está puesto en otro — locus externo.'},
+  {p:['algún día','en algún momento','cuando pueda'],q:'contingente',m:'Temporalidad difusa — el deseo está pospuesto.'},
+  {p:['cansada','cansado','harta','harto','no aguanto','desesperada','desesperado'],q:'imposible',m:'Se percibe agotamiento acumulado.'},
+];
+
+const W_COORD=[0.8,1.5,1.2,0.5];
+
+function detectSem(text){
+  if(!text||text.length<8) return null;
+  const l=text.toLowerCase();
+  const sc={posible:0,imposible:0,necesario:0,contingente:0};
+  let msg='';
+  for(const r of SEM){
+    if(r.p.some(p=>l.includes(p))){sc[r.q]++;if(!msg)msg=r.m;}
+  }
+  const top=Object.entries(sc).sort((a,b)=>b[1]-a[1])[0];
+  if(top[1]===0) return null;
+  return {q:top[0],msg,scores:sc};
+}
+
+function onWI(idx){
+  const v=document.getElementById('i'+idx).value;
+  S.coords[idx]=v;
+  document.getElementById('cc'+idx).textContent=v.length>0?v.length+' / 300':'';
+  document.getElementById('wn'+idx).disabled=v.trim().length<10;
+  const sig=detectSem(v);
+  S.coordSignals[idx]=sig;
+  const el=document.getElementById('ss'+idx);
+  if(sig&&v.trim().length>15){el.className='sem-signal '+sig.q;el.textContent=sig.msg;}
+  else el.className='sem-signal h';
+}
+
+function nextW(to){
+  const from=to-1;
+  const curr=document.getElementById('ws'+from);
+  const next=document.getElementById('ws'+to);
+  curr.classList.add('exit-l');
+  setTimeout(()=>{
+    curr.classList.remove('active','exit-l');
+    next.style.cssText='opacity:0;transform:translateX(32px)';
+    next.classList.add('active');
+    requestAnimationFrame(()=>{next.style.cssText='';});
+  },200);
+}
+
+function prevW(to){
+  const from=to+1;
+  const curr=document.getElementById('ws'+from);
+  const prev=document.getElementById('ws'+to);
+  curr.style.cssText='opacity:0;transform:translateX(32px)';
+  setTimeout(()=>{
+    curr.classList.remove('active');curr.style.cssText='';
+    prev.style.cssText='opacity:0;transform:translateX(-32px)';
+    prev.classList.add('active');
+    requestAnimationFrame(()=>{prev.style.cssText='';});
+  },200);
+}
+
+function showSum(){
+  const labels=['Desde dónde','Hacia dónde','Por dónde','El resultado'];
+  document.getElementById('sum-card').innerHTML=
+    labels.map((l,i)=>`<div class="sum-row"><span class="sum-label">${l}</span><span class="sum-val">${S.coords[i]||'—'}</span></div>`).join('');
+  const sc={posible:0,imposible:0,necesario:0,contingente:0};
+  S.coordSignals.forEach((sig,i)=>{
+    if(sig) Object.entries(sig.scores).forEach(([q,v])=>sc[q]+=v*W_COORD[i]);
+  });
+  const top=Object.entries(sc).sort((a,b)=>b[1]-a[1])[0];
+  S.initQ=top[1]>0?top[0]:'';
+  nextW(4);
+}
+
+/* ---- PREGUNTAS ---- */
+const QS=[
+  {id:'q1',t:'Cuando imaginas que tu deseo se cumple, ¿qué pasa dentro de ti?',type:'opts',opts:[
+    {t:'Siento alivio, aunque algo me dice que hay que controlarlo bien',v:'posible'},
+    {t:'Algo en mí no lo cree del todo posible, aunque quiera creerlo',v:'imposible'},
+    {t:'Siento euforia mezclada con miedo a perderlo',v:'necesario'},
+    {t:'Me llena de ideas pero sin saber por cuál ir',v:'contingente'},
+  ]},
+  {id:'q2',t:'¿Cuántas veces en el último mes hiciste algo concreto hacia tu deseo?',type:'opts',opts:[
+    {t:'Varias veces, pero siempre dentro de lo que ya conozco',v:'posible'},
+    {t:'Casi ninguna — el miedo o la duda me detuvieron',v:'imposible'},
+    {t:'Pospongo porque primero necesito que otra cosa ocurra',v:'necesario'},
+    {t:'Depende del día y del ánimo — sin constancia',v:'contingente'},
+  ]},
+  {id:'q3',t:'Si alguien como tú logró lo que deseas, ¿cómo te hace sentir?',type:'opts',opts:[
+    {t:'Me inspira, aunque siento que ellos podían y yo tengo límites',v:'imposible'},
+    {t:'Me motiva — creo que yo también podría bajo ciertas condiciones',v:'posible'},
+    {t:'Me genera urgencia — ¿por qué ellos sí y yo todavía no?',v:'necesario'},
+    {t:'Me pierdo pensando en cuántos caminos hay posibles',v:'contingente'},
+  ]},
+  {id:'q4',t:'¿Qué emoción predomina cuando sientes que tu deseo no llega?',type:'opts',opts:[
+    {t:'Frustración — lo merezco pero algo siempre me frena',v:'posible'},
+    {t:'Resignación — en el fondo creía que no iba a ocurrir',v:'imposible'},
+    {t:'Ansiedad fuerte o sensación de vacío',v:'necesario'},
+    {t:'Confusión — no sé si no quiero suficiente o si el camino está mal',v:'contingente'},
+  ]},
+  {id:'q5',t:'¿Hay algo o alguien que necesita cambiar primero para que puedas avanzar?',type:'opts',opts:[
+    {t:'No necesariamente, aunque siempre me pongo condiciones',v:'posible'},
+    {t:'Yo mismo/a necesito cambiar, pero no sé si puedo ni cómo',v:'imposible'},
+    {t:'Sí — circunstancias externas deben alinearse primero',v:'necesario'},
+    {t:'Depende del camino que elija — hay muchas variables',v:'contingente'},
+  ]},
+  {id:'q6',t:'¿Podrías estar bien si tu deseo nunca llegara?',type:'likert',labels:['No, me devastaría','Tal vez con tiempo','Sí, sin problema']},
+  {id:'q7',t:'¿Tienes un plan concreto con pasos definidos?',type:'opts',opts:[
+    {t:'Sí, pero siempre dentro de lo que conozco y controlo',v:'posible'},
+    {t:'No — cuando intento planear algo me dice que no funcionará',v:'imposible'},
+    {t:'El plan está pausado esperando algo externo',v:'necesario'},
+    {t:'Tengo muchas ideas de plan pero no me decido por ninguna',v:'contingente'},
+  ]},
+  {id:'q8',t:'Cuando debes actuar hacia tu deseo, ¿qué ocurre normalmente?',type:'opts',opts:[
+    {t:'Actúo, pero sin salir de mi zona conocida',v:'posible'},
+    {t:'El miedo me borra — abandono antes de empezar',v:'imposible'},
+    {t:'Uso mi energía en explicar por qué no es el momento todavía',v:'necesario'},
+    {t:'Los factores externos o mi estado de ánimo deciden por mí',v:'contingente'},
+  ]},
+  {id:'q9',t:'¿Con qué frase te identificas más?',type:'opts',opts:[
+    {t:'"Puedo lograrlo, pero hay cosas que prefiero no arriesgar"',v:'posible'},
+    {t:'"En el fondo sé que eso no es para mí"',v:'imposible'},
+    {t:'"Lo necesito. Sin esto no estoy completo/a"',v:'necesario'},
+    {t:'"A veces creo que sí, a veces que no. Todo depende"',v:'contingente'},
+  ]},
+  {id:'q10',t:'¿Qué nivel de apego sientes hacia que tu deseo ocurra exactamente como lo imaginas?',type:'likert',labels:['Ninguno — me adapto','Moderado','Total — tiene que ser así']},
+];
+
+function buildQ(){
+  const c=document.getElementById('qc');c.innerHTML='';
+  QS.forEach((q,i)=>{
+    const d=document.createElement('div');
+    d.className='card q-wrap';d.style.marginBottom='1rem';
+    let h=`<div class="q-num">Pregunta ${i+1} de ${QS.length}</div><div class="q-label">${q.t}</div>`;
+    if(q.type==='opts'){
+      h+=`<div class="opts">`;
+      q.opts.forEach(o=>h+=`<button class="opt" onclick="so(this,'${q.id}','${o.v}')">${o.t}</button>`);
+      h+=`</div>`;
+    } else {
+      h+=`<div class="likert-row">`;
+      [1,2,3,4,5].forEach(n=>h+=`<button class="lbtn" onclick="sl(this,'${q.id}',${n})">${n}</button>`);
+      h+=`</div><div class="likert-labels"><span>${q.labels[0]}</span><span>${q.labels[1]}</span><span>${q.labels[2]}</span></div>`;
+    }
+    d.innerHTML=h;c.appendChild(d);
+  });
+}
+
+function so(el,id,v){
+  S.answers[id]=v;
+  el.closest('.opts').querySelectorAll('.opt').forEach(b=>b.classList.remove('sel'));
+  el.classList.add('sel');chkQ();
+}
+function sl(el,id,v){
+  S.answers[id]='l'+v;
+  el.closest('.likert-row').querySelectorAll('.lbtn').forEach(b=>b.classList.remove('sel'));
+  el.classList.add('sel');chkQ();
+}
+function sv(el,k,v){
+  S.verif[k]=v;
+  el.closest('.opts').querySelectorAll('.opt').forEach(b=>b.classList.remove('sel'));
+  el.classList.add('sel');
+}
+function chkQ(){document.getElementById('btn-diag').disabled=Object.keys(S.answers).length<QS.length;}
+
+function calcDx(){
+  const sc={posible:0,imposible:0,necesario:0,contingente:0};
+  if(S.initQ) sc[S.initQ]+=1.2;
+  S.coordSignals.forEach((sig,i)=>{
+    if(sig) Object.entries(sig.scores).forEach(([q,v])=>sc[q]+=v*W_COORD[i]*0.3);
+  });
+  Object.values(S.answers).forEach(v=>{
+    if(!v.startsWith('l')&&sc[v]!==undefined) sc[v]++;
+    if(v==='l1'||v==='l2') sc.necesario+=.6;
+    if(v==='l4'||v==='l5') sc.posible+=.3;
+  });
+  S.diagQ=Object.entries(sc).sort((a,b)=>b[1]-a[1])[0][0];
+  goTo(2);renderDx();callAI();
+}
+
+function renderDx(){
+  const q=QD[S.diagQ];
+  document.getElementById('qdisplay').innerHTML=`
+    <div class="arch-journey">
+      <div class="arch-box shadow">
+        <div class="arch-name-shadow">${q.shadow}</div>
+        <div class="arch-role">Arquetipo sombra — dónde estás</div>
+      </div>
+      <div class="arch-arrow-col">
+        <div class="arch-arrow-line"></div>
+        <div class="arch-arrow-icon"><svg viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div>
+        <div class="arch-arrow-line"></div>
+      </div>
+      <div class="arch-box positive">
+        <div class="arch-name-pos">${q.positive}</div>
+        <div class="arch-role">Arquetipo positivo — hacia dónde vas</div>
+      </div>
+    </div>
+    <div class="arch-belief">"${q.belief}"</div>`;
+}
+
+async function callAI(){
+  const q=QD[S.diagQ];
+  const qlist=QS.map((qu,i)=>{
+    const a=S.answers[qu.id]||'sin respuesta';
+    if(qu.type==='opts'){const op=qu.opts?.find(o=>o.v===a);return `P${i+1}: "${qu.t}" → "${op?.t||a}"`;}
+    return `P${i+1}: "${qu.t}" → ${a.replace('l','')} de 5`;
+  }).join('\n');
+
+  const prompt=`Coordenadas aristotélicas de la persona:
+Desde dónde (estado actual): "${S.coords[0]}"
+Hacia dónde (deseo): "${S.coords[1]}"
+Por dónde (intentos): "${S.coords[2]}"
+El resultado (cómo sabrá que llegó): "${S.coords[3]}"
+
+Cuadrante diagnosticado: ${S.diagQ}
+Arquetipo sombra actual: ${q.shadow}
+Arquetipo positivo (destino): ${q.positive}
+Creencia central: "${q.belief}"
+
+Respuestas al diagnóstico:
+${qlist}
+
+Genera:
+1) Análisis de 2-3 párrafos cortos que nombre patrones concretos vistos en sus respuestas. Conecta las 4 coordenadas con la cárcel mental identificada. Sé específico con lo que la persona escribió.
+2) Guía PSH para cruzar de ${q.shadow} hacia ${q.positive} esta semana — tres bloques accionables.
+
+Responde SOLO en JSON válido sin bloques de código:
+{"analisis":"...","pienso":"...","siento":"...","hago":"..."}`;
+
+  try{
+    const r=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        model:'claude-sonnet-4-20250514',
+        max_tokens:1000,
+        system:`Eres guía de la metodología AmorProof basada en los 4 cuadrantes modales de Peirce. Los arquetipos sombra son: El Bufón (Posible), El Ilusionista (Imposible), Ananké (Necesario), Ares (Contingente). Los arquetipos positivos son: El Arquitecto, El Realista Curioso, El Comprometido, El Explorador. Tono cálido, directo, sin condescendencia. Sin markdown, sin asteriscos, sin viñetas. Solo párrafos fluidos. El PSH debe ser accionable esta semana con verbos concretos. Responde SOLO en JSON válido.`,
+        messages:[{role:'user',content:prompt}]
+      })
+    });
+    const data=await r.json();
+    const raw=data.content.find(b=>b.type==='text')?.text||'{}';
+    const parsed=JSON.parse(raw.replace(/```json|```/g,'').trim());
+    document.getElementById('ai-analysis').textContent=parsed.analisis||'No se pudo cargar el análisis.';
+    document.getElementById('psh-grid').innerHTML=`
+      <div class="psh-card"><div class="psh-pill">Pienso</div><div class="psh-body">${parsed.pienso||''}</div></div>
+      <div class="psh-card"><div class="psh-pill">Siento</div><div class="psh-body">${parsed.siento||''}</div></div>
+      <div class="psh-card"><div class="psh-pill">Hago</div><div class="psh-body">${parsed.hago||''}</div></div>`;
+  }catch(e){
+    document.getElementById('ai-analysis').textContent='Error al cargar el análisis. Por favor recarga la página.';
+    document.getElementById('psh-grid').innerHTML='<div class="ai-box" style="margin:0;grid-column:1/-1"><div class="ai-text">No se pudo cargar la guía PSH.</div></div>';
+  }
+}
+
+async function finalResult(){
+  document.getElementById('final-res').style.display='block';
+  document.getElementById('btn-verif').disabled=true;
+  const before=parseInt(document.getElementById('sb').value);
+  const now=parseInt(document.getElementById('sn').value);
+  const delta=now-before;
+  const v3=S.verif.v3||'';
+  const moved=delta>=2||v3==='apertura'||v3==='movimiento';
+  const q=QD[S.diagQ];
+
+  document.getElementById('trans-badge-wrap').innerHTML=moved
+    ?`<div class="trans-badge moved">Se detecta movimiento hacia ${q.positive}</div>`
+    :`<div class="trans-badge same">El proceso apenas comienza — cada paso cuenta</div>`;
+
+  const prompt=`La persona comenzó como ${q.shadow} (cuadrante ${S.diagQ}) con el deseo declarado: "${S.coords[1]}".
+
+Coordenadas originales:
+Desde dónde: "${S.coords[0]}"
+Por dónde: "${S.coords[2]}"
+El resultado esperado: "${S.coords[3]}"
+
+Después del proceso PSH hacia ${q.positive}:
+- Pensamiento cambió: ${S.verif.v1||'no indicado'}
+- Acción nueva: ${S.verif.v2||'no indicado'}
+- Cercanía al deseo antes: ${before}/10, hoy: ${now}/10 (delta: ${delta>=0?'+'+delta:delta})
+- Sensación actual: ${v3||'no indicado'}
+
+Escribe un mensaje de cierre de 2-3 párrafos:
+1) Reconoce el movimiento real sin exagerar (si delta es 0 o negativo, dilo con honestidad amable)
+2) Nombra si hay señal de cruce entre arquetipos o qué indica el estado actual
+3) Un paso concreto y específico para la próxima semana
+
+Sin markdown. Solo texto plano.`;
+
+  try{
+    const r=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        model:'claude-sonnet-4-20250514',
+        max_tokens:600,
+        system:'Eres guía de la metodología AmorProof. Tono cálido y directo. Sin markdown. Solo texto plano. Si no hay movimiento, dilo con honestidad amable — no infles el resultado.',
+        messages:[{role:'user',content:prompt}]
+      })
+    });
+    const data=await r.json();
+    const txt=data.content.find(b=>b.type==='text')?.text||'Gracias por completar tu proceso.';
+    document.getElementById('final-text').textContent=txt;
+  }catch(e){
+    document.getElementById('final-text').textContent='Gracias por completar tu proceso AmorProof.';
+  }
+}
+
+function goTo(n){
+  document.querySelectorAll('.scr').forEach((s,i)=>s.classList.toggle('on',i===n));
+  document.querySelectorAll('.op-step').forEach((s,i)=>{
+    s.classList.toggle('active',i===n);
+    s.classList.toggle('done',i<n);
+  });
+  if(n===1) buildQ();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function restart(){
+  S.coords=['','','',''];S.coordSignals=[null,null,null,null];
+  S.initQ='';S.answers={};S.diagQ='';S.verif={};
+  [0,1,2,3].forEach(i=>{
+    const el=document.getElementById('i'+i);
+    if(el){el.value='';document.getElementById('cc'+i).textContent='';document.getElementById('ss'+i).className='sem-signal h';}
+  });
+  document.getElementById('final-res').style.display='none';
+  document.getElementById('btn-verif').disabled=false;
+  document.getElementById('wn0').disabled=true;
+  document.querySelectorAll('.wiz-step').forEach(s=>s.classList.remove('active','exit-l'));
+  document.getElementById('ws0').classList.add('active');
+  goTo(0);
+}
+
+document.getElementById('yr').textContent=new Date().getFullYear();
+</script>
+</body>
+</html>
